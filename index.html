@@ -132,6 +132,8 @@ body.admin .gerar{display:block}
 body.admin #sec-locatarios,body.admin #sec-moradores,body.admin #sec-docs,body.admin aside,body.admin .facts{display:none}
 body.admin .layout{grid-template-columns:minmax(0,1fr);max-width:860px}
 body.admin{padding-bottom:0}
+.lacts .off{opacity:.4;pointer-events:none}
+#linkGen:disabled{opacity:.6}
 .lacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
 input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 @media print{.top,.hero,aside,footer{display:none}}
@@ -173,16 +175,6 @@ input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 
 <main>
 <form id="ficha" autocomplete="on" novalidate>
-<section class="card gerar" id="sec-gerar">
-<div class="ch"><span class="n">L</span><div><h2>Link para o cliente</h2><p>Uso interno da LHSP. Preencha o imóvel abaixo e envie o link gerado.</p></div></div>
-<div class="cb">
-<label for="linkOut">Link gerado</label>
-<input id="linkOut" readonly>
-<div class="lacts"><button type="button" class="pdf" id="linkCopy">Copiar link</button><a class="send" id="linkWa" href="https://wa.me/" target="_blank" rel="noopener">Enviar link pelo WhatsApp</a></div>
-<p class="note" id="linkMsg" style="margin-top:8px"></p>
-</div>
-</section>
-
 <section class="card" id="sec-imovel">
 <div class="ch"><span class="n">1</span><div><h2>Imóvel pretendido</h2><p>Dados do imóvel que você quer alugar.</p></div></div>
 <div class="cb"><div class="grid">
@@ -193,6 +185,16 @@ input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 <div class="f s1"><label for="im_inicio">Início da locação</label><input id="im_inicio" name="im_inicio" type="date"></div>
 <div class="f s2"><label for="im_gar">Garantia locatícia</label><select id="im_gar" name="im_gar"><option>Caução</option><option>Fiador</option><option>Seguro fiança</option><option>Título de capitalização</option></select></div>
 </div></div>
+</section>
+
+<section class="card gerar" id="sec-gerar">
+<div class="ch"><span class="n">L</span><div><h2>Link para o cliente</h2><p>Uso interno da LHSP. Preencha o imóvel acima e toque em Gerar link.</p></div></div>
+<div class="cb">
+<label for="linkOut">Link gerado</label>
+<input id="linkOut" readonly>
+<div class="lacts"><button type="button" class="send" id="linkGen">Gerar link</button><a class="send off" id="linkWa" href="https://wa.me/" target="_blank" rel="noopener">Enviar link pelo WhatsApp</a><button type="button" class="pdf off" id="linkCopy">Copiar link</button></div>
+<p class="note" id="linkMsg" style="margin-top:8px"></p>
+</div>
 </section>
 
 <section class="card" id="sec-locatarios">
@@ -446,6 +448,7 @@ doc.save(arquivo);aviso('PDF salvo: '+arquivo,true);
 });
 
 if(!load())addP();
+const API='https://lucanob.app.n8n.cloud/webhook';
 const MAP={end:'im_end',bai:'im_bairro',cid:'im_cidade',fin:'im_fin',ini:'im_inicio',gar:'im_gar'};
 const qs=new URLSearchParams(location.search);let pre=false;
 for(const [k,id] of Object.entries(MAP)){if(qs.has(k)){const el=document.getElementById(id);el.value=qs.get(k);pre=true}}
@@ -454,20 +457,35 @@ if(qs.has('i')){const p=qs.get('i').split('~');const set=(id,v)=>{if(v)document.
 set('im_end',p[0]);set('im_bairro',p[1]);set('im_cidade',p[2]||'São Paulo');set('im_fin',FIN[p[3]]||'Residencial');
 if(p[4]&&/^\d{6}$/.test(p[4]))set('im_inicio','20'+p[4].slice(0,2)+'-'+p[4].slice(2,4)+'-'+p[4].slice(4,6));
 set('im_gar',GAR[p[5]]||'');pre=true}
-if(pre){for(const id of Object.values(MAP)){const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
+if(pre){for(const id of Object.values(MAP)){if(id==='im_inicio')continue;const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
 document.querySelector('#sec-imovel .ch p').textContent='Dados do imóvel informados pela LHSP.'}
 if(location.hash==='#gerar'){
 document.body.classList.add('admin');
-const out=document.getElementById('linkOut'),wa=document.getElementById('linkWa');
-const enc=s=>encodeURIComponent(s.replace(/~/g,'-')).replace(/%20/g,'+').replace(/%2C/g,',').replace(/%2F/g,'/');
-const gera=()=>{const g=id=>document.getElementById(id).value.trim();
-const cid=g('im_cidade');const ini=g('im_inicio');
-const parts=[g('im_end'),g('im_bairro'),/^s[aã]o paulo$/i.test(cid)?'':cid,g('im_fin')==='Comercial'?'C':'',ini?ini.slice(2).replace(/-/g,''):'',{'Caução':'C','Fiador':'F','Seguro fiança':'S','Título de capitalização':'T'}[g('im_gar')]||''];
-while(parts.length&&!parts[parts.length-1])parts.pop();
-const url=location.origin+location.pathname+(parts.length?'?i='+parts.map(enc).join('~'):'');out.value=url;wa.href='https://wa.me/?text='+encodeURIComponent('Segue a ficha cadastral de locação da LHSP. Preencha e envie o PDF por aqui: '+url);return url};
-document.getElementById('sec-imovel').addEventListener('input',gera);document.getElementById('sec-imovel').addEventListener('change',gera);gera();
-document.getElementById('linkCopy').addEventListener('click',async()=>{const u=gera();try{await navigator.clipboard.writeText(u);document.getElementById('linkMsg').textContent='Link copiado.'}catch(e){out.select();document.getElementById('linkMsg').textContent='Selecione e copie o link acima.'}});
+const out=document.getElementById('linkOut'),wa=document.getElementById('linkWa'),lm=document.getElementById('linkMsg'),bt=document.getElementById('linkGen'),cp=document.getElementById('linkCopy');
+let atual='';
+const limpa=()=>{atual='';out.value='';wa.classList.add('off');cp.classList.add('off');lm.textContent='Preencha o imóvel e toque em Gerar link.'};
+document.getElementById('sec-imovel').addEventListener('input',limpa);document.getElementById('sec-imovel').addEventListener('change',limpa);limpa();
+bt.addEventListener('click',async()=>{const g=id=>document.getElementById(id).value.trim();
+if(!g('im_end')){lm.textContent='Preencha o endereço do imóvel.';document.getElementById('im_end').focus();return}
+bt.disabled=true;lm.textContent='Gerando link...';
+try{const r=await fetch(API+'/ficha-lhsp-salvar?'+new URLSearchParams({end:g('im_end'),bai:g('im_bairro'),cid:g('im_cidade'),fin:g('im_fin'),ini:g('im_inicio'),gar:g('im_gar')}));const j=await r.json();if(!j.codigo)throw 0;
+atual=location.origin+location.pathname+'?c='+j.codigo;out.value=atual;
+wa.href='https://wa.me/?text='+encodeURIComponent('Segue a ficha cadastral de locação da LHSP. Preencha e envie o PDF por aqui: '+atual);
+wa.classList.remove('off');cp.classList.remove('off');lm.textContent='Link pronto. Envie pelo WhatsApp ou copie.'}
+catch(e){lm.textContent='Não foi possível gerar o link agora. Tente de novo em instantes.'}
+bt.disabled=false});
+cp.addEventListener('click',async()=>{if(!atual)return;try{await navigator.clipboard.writeText(atual);lm.textContent='Link copiado.'}catch(e){out.select();lm.textContent='Selecione e copie o link acima.'}});
 }
+if(qs.has('c')&&location.hash!=='#gerar'){
+const st=document.querySelector('#sec-imovel .ch p');st.textContent='Carregando os dados do imóvel...';
+fetch(API+'/ficha-lhsp-ler?c='+encodeURIComponent(qs.get('c'))).then(r=>r.json()).then(j=>{
+if(!j.ok){st.textContent='Dados do imóvel que você quer alugar.';return}
+const set=(id,v)=>{if(v)document.getElementById(id).value=v};
+set('im_end',j.end);set('im_bairro',j.bai);set('im_cidade',j.cid);set('im_fin',j.fin);set('im_inicio',j.ini);set('im_gar',j.gar);
+for(const id of Object.values(MAP)){if(id==='im_inicio')continue;const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
+st.textContent='Dados do imóvel informados pela LHSP.';sync()}).catch(()=>{st.textContent='Dados do imóvel que você quer alugar.'});
+}
+
 sync();
 }
 </script>
