@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ficha Cadastral LHSP</title>
+<meta name="description" content="Ficha cadastral de locação da LHSP Administração Imobiliária.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LHSP Administração Imobiliária">
+<meta property="og:title" content="Ficha Cadastral LHSP">
+<meta property="og:description" content="Ficha cadastral de locação da LHSP Administração Imobiliária.">
+<meta property="og:image" content="https://lucanoberft.github.io/ficha-lhsp/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="theme-color" content="#0B1B2E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -116,6 +124,13 @@ footer{border-top:1px solid var(--line);background:#fff}
 footer .in{max-width:1180px;margin:0 auto;padding:18px 20px;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
 @media(max-width:600px){.top .ct{display:none}.top img{height:28px}.hero .in{padding:26px 16px 24px}.layout{padding:16px 12px 30px}.facts{font-size:13px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+.gerar{display:none;border-color:var(--azul)}
+body.admin .gerar{display:block}
+body.admin #sec-locatarios,body.admin #sec-moradores,body.admin #sec-docs,body.admin aside,body.admin .facts{display:none}
+body.admin .layout{grid-template-columns:minmax(0,1fr);max-width:860px}
+body.admin{padding-bottom:0}
+.lacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
+input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 @media print{.top,.hero,aside,footer{display:none}}
 </style>
 </head>
@@ -128,7 +143,7 @@ footer .in{max-width:1180px;margin:0 auto;padding:18px 20px;font-size:12.5px;col
 <section class="hero"><div class="in">
 <p class="eyebrow">Locação · Pessoa física</p>
 <h1>Ficha cadastral de locação</h1>
-<p class="lead">Preencha os dados dos locatários. No fim, envie a ficha pelo WhatsApp para a LHSP ou salve em PDF.</p>
+<p class="lead">Preencha os dados dos locatários. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.</p>
 <ul class="facts">
 <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#9FC1EA" stroke-width="1.5"/><path d="M8 4.5V8l2.5 1.5" stroke="#9FC1EA" stroke-width="1.5" stroke-linecap="round"/></svg>Cerca de 5 minutos</li>
 <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#9FC1EA" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="#9FC1EA" stroke-width="1.5"/></svg>Os dados vão só para a LHSP</li>
@@ -146,15 +161,25 @@ footer .in{max-width:1180px;margin:0 auto;padding:18px 20px;font-size:12.5px;col
 </nav>
 <div class="prog"><div class="t" id="ptxt">Obrigatórios: 0 de 3</div><div class="tr"><i id="pbar"></i></div></div>
 <div class="acts">
-<a class="send" id="send" href="https://wa.me/5511941663001" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 16.5l1-3.4A7 7 0 1110 17a7 7 0 01-3.2-.8l-3.3.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Enviar pelo WhatsApp</a>
+<button type="button" class="send" id="send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 16.5l1-3.4A7 7 0 1110 17a7 7 0 01-3.2-.8l-3.3.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Enviar pelo WhatsApp</button>
 <button type="button" class="pdf" id="pdf"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9m0 0l-3.5-3.5M10 12l3.5-3.5M4 14.5V16a1 1 0 001 1h10a1 1 0 001-1v-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar PDF</button>
 </div>
 <p class="msg hide" id="msg" role="status"></p>
-<p class="hint">O que você digitar fica guardado neste aparelho até o envio. A ficha vai para o WhatsApp da LHSP, (11) 94166-3001.</p>
+<p class="hint">O que você digitar fica guardado neste aparelho até o envio. Envie o PDF para a LHSP pelo WhatsApp: (11) 94166-3001.</p>
 </div></aside>
 
 <main>
 <form id="ficha" autocomplete="on" novalidate>
+<section class="card gerar" id="sec-gerar">
+<div class="ch"><span class="n">L</span><div><h2>Link para o cliente</h2><p>Uso interno da LHSP. Preencha o imóvel abaixo e envie o link gerado.</p></div></div>
+<div class="cb">
+<label for="linkOut">Link gerado</label>
+<input id="linkOut" readonly>
+<div class="lacts"><button type="button" class="pdf" id="linkCopy">Copiar link</button><a class="send" id="linkWa" href="https://wa.me/" target="_blank" rel="noopener">Enviar link pelo WhatsApp</a></div>
+<p class="note" id="linkMsg" style="margin-top:8px"></p>
+</div>
+</section>
+
 <section class="card" id="sec-imovel">
 <div class="ch"><span class="n">1</span><div><h2>Imóvel pretendido</h2><p>Dados do imóvel que você quer alugar.</p></div></div>
 <div class="cb"><div class="grid">
@@ -287,7 +312,6 @@ document.getElementById('docFiador').classList.toggle('hide',val('im_gar')!=='Fi
 for(let i=1;i<=nP;i++){const al=val(`p${i}_tipo`)==='Alugada';document.querySelectorAll(`[data-p="${i}"] .alug`).forEach(e=>e.classList.toggle('hide',!al))}
 document.getElementById('addP').classList.toggle('hide',nP>=4);
 document.getElementById('addM').classList.toggle('hide',nM>=4);
-document.getElementById('send').href='https://wa.me/5511941663001?text='+encodeURIComponent(texto());
 progresso();
 
 save();
@@ -325,11 +349,19 @@ form.addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)re
 document.getElementById('addP').addEventListener('click',addP);
 document.getElementById('addM').addEventListener('click',addM);
 
-document.getElementById('send').addEventListener('click',e=>{
+document.getElementById('send').addEventListener('click',async()=>{
 sync();const f=faltando();
-if(f.length){e.preventDefault();aviso('Falta preencher: '+f.map(x=>x.txt).join(', ')+'.');f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
-aviso('Abrindo o WhatsApp. Confira a mensagem e toque em enviar.',true);
+if(f.length){aviso('Falta preencher: '+f.map(x=>x.txt).join(', ')+'.');f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
+if(!window.jspdf){aviso('O gerador de PDF não carregou. Verifique a internet e recarregue a página.');return}
+try{const {doc,arquivo}=gerarPDF();const blob=doc.output('blob');
+const fileObj=new File([blob],arquivo,{type:'application/pdf'});
+if(navigator.canShare&&navigator.canShare({files:[fileObj]})){
+try{await navigator.share({files:[fileObj],title:'Ficha cadastral LHSP',text:'Ficha cadastral de locação - '+(val('p1_nome')||'')});aviso('Escolha o WhatsApp e o contato da LHSP para enviar.',true)}catch(err){if(err.name!=='AbortError')aviso('Não foi possível abrir o compartilhamento. Use Salvar PDF e envie o arquivo pelo WhatsApp.')}
+return}
+doc.save(arquivo);aviso('PDF salvo: '+arquivo+'. Envie o arquivo pelo WhatsApp para a LHSP: (11) 94166-3001.',true);
+}catch(err){aviso('Não foi possível gerar o PDF. Tente novamente.')}
 });
+
 function dados(){
 const S=[];
 S.push({t:'Imóvel pretendido',r:[['Endereço',val('im_end'),2],['Bairro',val('im_bairro')],['Cidade',val('im_cidade')],['Finalidade',val('im_fin')],['Início da locação',fmtData(val('im_inicio'))],['Garantia locatícia',val('im_gar'),2]]});
@@ -409,6 +441,19 @@ doc.save(arquivo);aviso('PDF salvo: '+arquivo,true);
 });
 
 if(!load())addP();
+const MAP={end:'im_end',bai:'im_bairro',cid:'im_cidade',fin:'im_fin',ini:'im_inicio',gar:'im_gar'};
+const qs=new URLSearchParams(location.search);let pre=false;
+for(const [k,id] of Object.entries(MAP)){if(qs.has(k)){const el=document.getElementById(id);el.value=qs.get(k);pre=true}}
+if(pre){for(const id of Object.values(MAP)){const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
+document.querySelector('#sec-imovel .ch p').textContent='Dados do imóvel informados pela LHSP.'}
+if(location.hash==='#gerar'){
+document.body.classList.add('admin');
+const out=document.getElementById('linkOut'),wa=document.getElementById('linkWa');
+const gera=()=>{const p=new URLSearchParams();for(const [k,id] of Object.entries(MAP)){const v=document.getElementById(id).value.trim();if(v)p.set(k,v)}
+const url=location.origin+location.pathname+(p.toString()?'?'+p.toString():'');out.value=url;wa.href='https://wa.me/?text='+encodeURIComponent('Segue a ficha cadastral de locação da LHSP. Preencha e envie o PDF por aqui: '+url);return url};
+document.getElementById('sec-imovel').addEventListener('input',gera);document.getElementById('sec-imovel').addEventListener('change',gera);gera();
+document.getElementById('linkCopy').addEventListener('click',async()=>{const u=gera();try{await navigator.clipboard.writeText(u);document.getElementById('linkMsg').textContent='Link copiado.'}catch(e){out.select();document.getElementById('linkMsg').textContent='Selecione e copie o link acima.'}});
+}
 sync();
 }
 </script>
