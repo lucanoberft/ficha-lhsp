@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ficha Cadastral LHSP</title>
 <meta name="description" content="Ficha cadastral de locação da LHSP Administração Imobiliária.">
+<meta property="og:url" content="https://lucanoberft.github.io/ficha-lhsp/">
+<meta property="og:image:type" content="image/png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LHSP Administração Imobiliária">
 <meta property="og:title" content="Ficha Cadastral LHSP">
@@ -12,6 +12,9 @@
 <meta property="og:image" content="https://lucanoberft.github.io/ficha-lhsp/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ficha Cadastral LHSP</title>
+
 <meta name="theme-color" content="#0B1B2E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -325,6 +328,8 @@ for(const [c,r] of [['nome','nome'],['cpf','CPF'],['tel','telefone']]){const el=
 return f;
 }
 const msg=document.getElementById('msg');
+function faltaTxt(f){const por={};for(const x of f){const m=x.txt.match(/^(.*) do locatário (\d+)$/);(por[m[2]]=por[m[2]]||[]).push(m[1])}
+return 'Para gerar a ficha, preencha os campos marcados em vermelho: '+Object.entries(por).map(([i,c])=>c.join(', ')+(nP>1?' do locatário '+i:'')).join('; ')+'.'}
 const aviso=(t,ok)=>{msg.textContent=t;msg.classList.toggle('ok',!!ok);msg.classList.remove('hide');clearTimeout(aviso.t);aviso.t=setTimeout(()=>msg.classList.add('hide'),5000)};
 
 // rebuild sequence numbers after removal
@@ -351,7 +356,7 @@ document.getElementById('addM').addEventListener('click',addM);
 
 document.getElementById('send').addEventListener('click',async()=>{
 sync();const f=faltando();
-if(f.length){aviso('Falta preencher: '+f.map(x=>x.txt).join(', ')+'.');f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
+if(f.length){aviso(faltaTxt(f));f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
 if(!window.jspdf){aviso('O gerador de PDF não carregou. Verifique a internet e recarregue a página.');return}
 try{const {doc,arquivo}=gerarPDF();const blob=doc.output('blob');
 const fileObj=new File([blob],arquivo,{type:'application/pdf'});
@@ -426,7 +431,7 @@ return {doc,arquivo:`Ficha_Cadastral_LHSP_${nome}.pdf`};
 
 document.getElementById('pdf').addEventListener('click',async()=>{
 sync();const f=faltando();
-if(f.length){aviso('Falta preencher: '+f.map(x=>x.txt).join(', ')+'.');f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
+if(f.length){aviso(faltaTxt(f));f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
 if(!window.jspdf){aviso('O gerador de PDF não carregou. Verifique a internet e recarregue a página.');return}
 try{const {doc,arquivo}=gerarPDF();
 const blob=doc.output('blob');
@@ -444,13 +449,22 @@ if(!load())addP();
 const MAP={end:'im_end',bai:'im_bairro',cid:'im_cidade',fin:'im_fin',ini:'im_inicio',gar:'im_gar'};
 const qs=new URLSearchParams(location.search);let pre=false;
 for(const [k,id] of Object.entries(MAP)){if(qs.has(k)){const el=document.getElementById(id);el.value=qs.get(k);pre=true}}
+const FIN={R:'Residencial',C:'Comercial'},GAR={C:'Caução',F:'Fiador',S:'Seguro fiança',T:'Título de capitalização'};
+if(qs.has('i')){const p=qs.get('i').split('~');const set=(id,v)=>{if(v)document.getElementById(id).value=v};
+set('im_end',p[0]);set('im_bairro',p[1]);set('im_cidade',p[2]||'São Paulo');set('im_fin',FIN[p[3]]||'Residencial');
+if(p[4]&&/^\d{6}$/.test(p[4]))set('im_inicio','20'+p[4].slice(0,2)+'-'+p[4].slice(2,4)+'-'+p[4].slice(4,6));
+set('im_gar',GAR[p[5]]||'');pre=true}
 if(pre){for(const id of Object.values(MAP)){const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
 document.querySelector('#sec-imovel .ch p').textContent='Dados do imóvel informados pela LHSP.'}
 if(location.hash==='#gerar'){
 document.body.classList.add('admin');
 const out=document.getElementById('linkOut'),wa=document.getElementById('linkWa');
-const gera=()=>{const p=new URLSearchParams();for(const [k,id] of Object.entries(MAP)){const v=document.getElementById(id).value.trim();if(v)p.set(k,v)}
-const url=location.origin+location.pathname+(p.toString()?'?'+p.toString():'');out.value=url;wa.href='https://wa.me/?text='+encodeURIComponent('Segue a ficha cadastral de locação da LHSP. Preencha e envie o PDF por aqui: '+url);return url};
+const enc=s=>encodeURIComponent(s.replace(/~/g,'-')).replace(/%20/g,'+').replace(/%2C/g,',').replace(/%2F/g,'/');
+const gera=()=>{const g=id=>document.getElementById(id).value.trim();
+const cid=g('im_cidade');const ini=g('im_inicio');
+const parts=[g('im_end'),g('im_bairro'),/^s[aã]o paulo$/i.test(cid)?'':cid,g('im_fin')==='Comercial'?'C':'',ini?ini.slice(2).replace(/-/g,''):'',{'Caução':'C','Fiador':'F','Seguro fiança':'S','Título de capitalização':'T'}[g('im_gar')]||''];
+while(parts.length&&!parts[parts.length-1])parts.pop();
+const url=location.origin+location.pathname+(parts.length?'?i='+parts.map(enc).join('~'):'');out.value=url;wa.href='https://wa.me/?text='+encodeURIComponent('Segue a ficha cadastral de locação da LHSP. Preencha e envie o PDF por aqui: '+url);return url};
 document.getElementById('sec-imovel').addEventListener('input',gera);document.getElementById('sec-imovel').addEventListener('change',gera);gera();
 document.getElementById('linkCopy').addEventListener('click',async()=>{const u=gera();try{await navigator.clipboard.writeText(u);document.getElementById('linkMsg').textContent='Link copiado.'}catch(e){out.select();document.getElementById('linkMsg').textContent='Selecione e copie o link acima.'}});
 }
