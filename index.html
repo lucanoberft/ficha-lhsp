@@ -15,148 +15,186 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ficha Cadastral LHSP</title>
 
-<meta name="theme-color" content="#0B1B2E">
+<meta name="theme-color" content="#0A1C33">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,300;6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
 <style>
 /*
-VOICE: imobiliária boutique; sóbrio, preciso, sem enfeite.
-IDEA: a ficha cadastral impressa da LHSP, em papel timbrado, transformada em formulário.
-PICTURE: o próprio formulário, aberto logo abaixo da faixa azul-escura com o título.
-COLOUR and TYPE: azul-escuro #0B1B2E na faixa, azul LHSP #0B4A8F nos detalhes, branco nos cartões; Inter.
-LAYOUT: computador com coluna lateral fixa (seções, progresso e botões) e formulário à direita; celular em uma coluna com botões fixos no rodapé.
+Mesmo sistema visual do site LHSP Imóveis: navy profundo, azul do logo, neutros de pedra.
+Nunito Sans: títulos leves (200/300), corpo 400, rótulos 700.
+Profundidade com duas sombras (sh-1 em repouso, sh-2 ao interagir), cantos de 16px nos cartões e botões em pílula.
+Um único momento de movimento: a entrada da faixa de título. O resto só reage ao toque.
+Computador: coluna lateral fixa com seções, progresso e botões. Celular: uma coluna e botões fixos no rodapé.
 */
-:root{color-scheme:light;--bg:#F3F5F8;--card:#fff;--ink:#16202C;--txt:#22262B;--muted:#6B7280;--line:#DCE1E8;--azul:#0B4A8F;--azul2:#1D63B3;--navy:#0B1B2E;--soft:#EEF4FB;--erro:#B42318}
+:root{
+--navy:#0A1C33;--navy2:#0F2744;--blue:#023F87;--blue2:#0B55B0;--sky:#2E7BD6;
+--paper:#FBFAF8;--stone:#F4F2EE;--stone2:#E9E6E0;--white:#fff;--line:#DCD8D0;--line2:#ECE9E3;
+--ink:#1E2328;--muted:#6E7177;--err:#B3261E;--errbg:#FBEAE9;--ok:#1C7A45;--okbg:#E7F4EC;
+--ease:cubic-bezier(.22,.8,.2,1);--r:16px;
+--sh1:0 1px 2px rgba(10,28,51,.06),0 10px 28px -14px rgba(10,28,51,.30);
+--sh2:0 2px 4px rgba(10,28,51,.06),0 30px 60px -24px rgba(10,28,51,.45);
+color-scheme:light}
 *{box-sizing:border-box;min-width:0}
-html{scroll-padding-top:20px;scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
 .hide{display:none!important}
-.top{background:#fff;border-bottom:1px solid var(--line)}
-.top .in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.top img{height:30px;width:auto;display:block}
-.top .ct{font-size:13px;color:var(--muted);text-align:right;line-height:1.45}
-.top .ct b{color:var(--ink);font-weight:600}
-.hero{background:var(--navy);color:#fff;position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;right:-60px;top:-40px;width:340px;height:340px;background:
-linear-gradient(var(--azul),var(--azul)) 0 0/48% 100% no-repeat,
-linear-gradient(#123A6B,#123A6B) 100% 0/48% 48% no-repeat,
-linear-gradient(#2B78D0,#2B78D0) 100% 100%/48% 48% no-repeat;opacity:.18;border-radius:28px;transform:rotate(8deg)}
-.hero .in{max-width:1180px;margin:0 auto;padding:34px 20px 30px;position:relative;z-index:1}
-.eyebrow{font-size:13px;color:#9FC1EA;font-weight:500;margin:0 0 6px}
-.hero h1{font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0 0 10px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-.hero p.lead{margin:0;max-width:640px;color:#D5DEEA;font-size:16px}
-.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0 0;padding:0;list-style:none;font-size:14px;color:#C9D6E6}
-.facts li{display:flex;align-items:center;gap:8px}
-.facts svg{flex:none}
-.layout{max-width:1180px;margin:0 auto;padding:22px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
-@media(min-width:1000px){.layout{grid-template-columns:260px minmax(0,1fr);align-items:start;gap:28px}}
-aside .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
-@media(min-width:1000px){aside{position:sticky;top:20px}}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 15.5px/1.6 "Nunito Sans","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip}
+:focus-visible{outline:1.5px solid var(--sky);outline-offset:3px}
+
+/* topo */
+.top{position:sticky;top:0;z-index:30;background:rgba(251,250,248,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.top .in{max-width:1240px;margin:0 auto;padding:14px clamp(16px,4vw,40px);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.top img{height:28px;width:auto;display:block}
+.top .ct{font-size:12.5px;color:var(--muted);text-align:right;line-height:1.5}
+.top .ct b{color:var(--navy);font-weight:700}
+
+/* faixa de título */
+.hero{position:relative;overflow:hidden;color:#fff;background:radial-gradient(900px 420px at 85% -10%,rgba(46,123,214,.38),transparent 60%),radial-gradient(700px 380px at 0% 120%,rgba(2,63,135,.55),transparent 60%),linear-gradient(160deg,var(--navy2),var(--navy) 60%)}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent)}
+.hero .in{max-width:1240px;margin:0 auto;padding:clamp(34px,6vw,64px) clamp(16px,4vw,40px) clamp(30px,5vw,52px);position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#9EC3EE}
+.eyebrow::before{content:"";width:30px;height:1px;background:currentColor}
+.hero h1{margin:0 0 14px;font-size:clamp(30px,4.4vw,52px);line-height:1.06;font-weight:200;letter-spacing:-.01em;text-wrap:balance}
+.hero .lead{margin:0;max-width:60ch;color:#C6D3E3;font-size:16.5px}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0;padding:0;list-style:none}
+.facts li{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-size:13.5px;color:#E3EBF5;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px)}
+.hero .eyebrow,.hero h1,.hero .lead,.facts{animation:sobe .9s var(--ease) both}
+.hero h1{animation-delay:.08s}.hero .lead{animation-delay:.16s}.facts{animation-delay:.24s}
+@keyframes sobe{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* estrutura */
+.layout{max-width:1240px;margin:0 auto;padding:28px clamp(12px,4vw,40px) 56px;display:grid;grid-template-columns:minmax(0,1fr);gap:26px}
+@media(min-width:1000px){.layout{grid-template-columns:270px minmax(0,1fr);align-items:start;gap:32px;margin-top:-26px;position:relative;z-index:2}}
+aside .box{background:var(--white);border-radius:var(--r);padding:18px;box-shadow:var(--sh2)}
+@media(min-width:1000px){aside{position:sticky;top:88px}}
 .nav{display:none}
-@media(min-width:1000px){.nav{display:block;margin-bottom:14px}}
-.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--txt);text-decoration:none;font-size:15px}
-.nav a .k{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--muted)}
-.nav a.on{background:var(--soft);color:var(--azul);font-weight:600}
-.nav a.on .k{border-color:var(--azul);background:var(--azul);color:#fff}
+@media(min-width:1000px){.nav{display:block;margin-bottom:16px}}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;color:var(--ink);text-decoration:none;font-size:14.5px;transition:background .3s,color .3s}
+.nav a:hover{background:var(--stone)}
+.nav a .k{flex:none;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:11.5px;font-weight:700;color:var(--muted);transition:all .3s}
+.nav a.on{background:#EAF1FB;color:var(--blue);font-weight:700}
+.nav a.on .k{border-color:var(--blue);background:var(--blue);color:#fff}
 .prog{margin:0 0 14px}
-.prog .t{font-size:13px;color:var(--muted);margin-bottom:6px}
-.prog .tr{height:6px;background:#E6EAF0;border-radius:6px;overflow:hidden}
-.prog .tr i{display:block;height:100%;width:0;background:var(--azul);border-radius:6px;transition:width .3s}
+.prog .t{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.prog .tr{height:6px;background:var(--stone2);border-radius:6px;overflow:hidden}
+.prog .tr i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--sky));transition:width .5s var(--ease)}
 .acts{display:flex;flex-direction:column;gap:10px}
-.send,.pdf{display:flex;align-items:center;justify-content:center;gap:9px;min-height:50px;border-radius:11px;font:600 15px/1.2 Inter,system-ui,sans-serif;text-decoration:none;cursor:pointer;padding:0 14px;text-align:center}
-.send{background:var(--azul);color:#fff;border:1px solid var(--azul)}
-.send:hover{background:#093D77}
-.pdf{background:#fff;color:var(--azul);border:1px solid var(--azul)}
-.pdf:hover{background:var(--soft)}
-.send:focus-visible,.pdf:focus-visible,.btn:focus-visible,.nav a:focus-visible{outline:3px solid #9FC1EA;outline-offset:2px}
-.msg{font-size:14px;margin:12px 0 0;color:var(--erro);line-height:1.4}
-.msg.ok{color:var(--azul)}
-.hint{font-size:12.5px;color:var(--muted);margin:12px 0 0;line-height:1.45}
+
+/* botões */
+.send,.pdf{position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 18px;border-radius:999px;font:700 14px/1.2 "Nunito Sans",Arial,sans-serif;text-decoration:none;cursor:pointer;text-align:center;transition:transform .45s var(--ease),box-shadow .45s,color .45s,border-color .45s}
+.send::before,.pdf::before{content:"";position:absolute;inset:0;z-index:-1;transform:scaleY(0);transform-origin:bottom;transition:transform .5s var(--ease)}
+.send:hover::before,.pdf:hover::before{transform:scaleY(1)}
+.send{color:#fff;border:0;background:linear-gradient(135deg,var(--blue2),var(--blue));box-shadow:0 10px 24px -10px rgba(2,63,135,.7)}
+.send::before{background:var(--navy)}
+.send:hover{transform:translateY(-1px)}
+.send:disabled{opacity:.6;cursor:wait}
+.pdf{color:var(--navy);background:var(--white);border:1px solid var(--navy)}
+.pdf::before{background:#E4ECF7}
+.pdf:hover{transform:translateY(-1px)}
+.msg{font-size:13.5px;margin:12px 0 0;padding:10px 12px;border-radius:10px;color:var(--err);background:var(--errbg);line-height:1.45}
+.msg.ok{color:var(--ok);background:var(--okbg)}
+.hint{font-size:12.5px;color:var(--muted);margin:12px 0 0;line-height:1.5}
 @media(max-width:999px){
 aside{order:2}
-aside .box{position:fixed;left:0;right:0;bottom:0;z-index:10;border-radius:16px 16px 0 0;border:0;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(11,27,46,.08);padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+aside .box{position:fixed;left:0;right:0;bottom:0;z-index:20;border-radius:20px 20px 0 0;padding:10px 14px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -14px 34px -18px rgba(10,28,51,.4)}
 .prog{margin:0 0 8px}.prog .t{font-size:12px;margin-bottom:4px}
 .acts{flex-direction:row}.acts>*{flex:1}
 .hint{display:none}.msg{margin:8px 0 0;text-align:center}
-.send,.pdf{font-size:14.5px;gap:7px;padding:0 10px}
-}
-@media(max-width:430px){.send svg,.pdf svg{display:none}
 body{padding-bottom:150px}
-}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;margin:0 0 18px;overflow:hidden}
-.ch{display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);background:linear-gradient(#fff,#FBFCFE)}
-.ch .n{flex:none;width:34px;height:34px;border-radius:9px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:15px}
-.ch h2{margin:0;font-size:18px;font-weight:600;color:var(--ink);line-height:1.2}
+.send,.pdf{font-size:13.5px;gap:7px;padding:0 12px}}
+@media(max-width:430px){.send svg,.pdf svg{display:none}}
+
+/* cartões de seção */
+.card{background:var(--white);border-radius:var(--r);margin:0 0 20px;box-shadow:var(--sh1);transition:box-shadow .5s var(--ease)}
+.card:focus-within{box-shadow:var(--sh2)}
+.ch{display:flex;align-items:center;gap:14px;padding:20px 24px 16px;border-bottom:1px solid var(--line2)}
+.ch .n{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:14.5px;color:#fff;background:linear-gradient(140deg,var(--blue2),var(--navy));box-shadow:0 8px 18px -10px rgba(2,63,135,.8)}
+.ch h2{margin:0;font-size:20px;font-weight:300;color:var(--navy);line-height:1.2}
 .ch p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
-.cb{padding:18px 22px 22px}
-@media(max-width:600px){.ch{padding:14px 16px}.cb{padding:14px 16px 18px}}
+.cb{padding:18px 24px 24px}
+@media(max-width:600px){.ch{padding:16px}.cb{padding:14px 16px 18px}}
+
+/* campos */
 .grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px 14px}
-.f{display:flex;flex-direction:column;gap:5px;grid-column:1/-1}
+.grid:empty{display:none}
+.f{display:flex;flex-direction:column;gap:6px;grid-column:1/-1}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.f.s1{grid-column:span 1}}
 @media(min-width:1180px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.f.s2{grid-column:span 2}.f.s1{grid-column:span 1}}
-label,.lbl{font-size:13px;color:#4B5563;font-weight:500}
-.req{color:var(--erro)}
-input,select{font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid #CDD4DE;border-radius:9px;padding:10px 12px;min-height:46px;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s}
-input::placeholder{color:#A3ABB7}
-select{background-image:linear-gradient(45deg,transparent 50%,#6B7280 50%),linear-gradient(135deg,#6B7280 50%,transparent 50%);background-position:calc(100% - 18px) 50%,calc(100% - 12px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:32px}
-input:hover,select:hover{border-color:#A9B4C2}
-input:focus,select:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(11,74,143,.15)}
-input.bad{border-color:var(--erro);box-shadow:0 0 0 3px rgba(180,35,24,.12)}
+label,.lbl{font-size:13px;color:#4A4C4E;font-weight:600}
+.req{color:var(--err)}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:11px 14px;min-height:48px;width:100%;-webkit-appearance:none;appearance:none;transition:border-color .3s,box-shadow .3s,background .3s}
+textarea{resize:vertical;min-height:90px}
+input::placeholder,textarea::placeholder{color:#A3A6AC}
+select{background-image:linear-gradient(45deg,transparent 50%,#6E7177 50%),linear-gradient(135deg,#6E7177 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+input:hover,select:hover,textarea:hover{border-color:#C3BEB4}
+input:focus,select:focus,textarea:focus{outline:none;background:#fff;border-color:var(--sky);box-shadow:0 0 0 4px rgba(46,123,214,.14)}
+input.bad,textarea.bad{border-color:var(--err);box-shadow:0 0 0 4px rgba(179,38,30,.10)}
+input.fix,select.fix,textarea.fix{background:var(--stone);color:var(--navy);border-style:dashed;opacity:1}
 .seg{display:flex;gap:8px}
-.seg label{position:relative;flex:1 1 0;display:flex;align-items:center;justify-content:center;min-height:46px;border:1px solid #CDD4DE;border-radius:9px;background:#fff;color:var(--ink);font-size:15px;cursor:pointer;padding:0 8px;text-align:center}
-.seg input{position:absolute;opacity:0;width:1px;height:1px;min-height:0;pointer-events:none}
-.seg label:has(input:checked){border-color:var(--azul);background:var(--soft);color:var(--azul);font-weight:600}
-.seg label:has(input:focus-visible){box-shadow:0 0 0 3px rgba(11,74,143,.2)}
-.pessoa+.pessoa{border-top:1px solid var(--line);margin-top:22px;padding-top:6px}
-.ptop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:4px 0 10px}
-.ph{margin:0;font-size:15px;font-weight:600;color:var(--azul)}
-.pessoa h4{margin:20px 0 10px;font-size:12.5px;font-weight:600;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--line)}
-.btn{font:inherit;font-weight:600;font-size:15px;border-radius:9px;min-height:46px;padding:0 16px;cursor:pointer;border:1px dashed #9DB5D3;background:#FAFCFF;color:var(--azul);width:100%;margin-top:16px}
-.btn:hover{background:var(--soft)}
-.btn.rm{border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:500;font-size:13.5px;min-height:36px;width:auto;margin:0;padding:0 12px}
+.seg label,.chips label{position:relative;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;text-align:center;font-weight:600;transition:all .3s var(--ease)}
+.seg label{flex:1 1 0;min-height:48px;border-radius:12px;font-size:14.5px;padding:0 8px}
+.seg input,.chips input{position:absolute;opacity:0;width:1px;height:1px;min-height:0;pointer-events:none}
+.seg label:hover,.chips label:hover{border-color:#C3BEB4}
+.seg label:has(input:checked),.chips label:has(input:checked){border-color:var(--blue);background:#EAF1FB;color:var(--blue);box-shadow:0 6px 16px -10px rgba(2,63,135,.6)}
+.seg label:has(input:focus-visible),.chips label:has(input:focus-visible){box-shadow:0 0 0 4px rgba(46,123,214,.2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{min-height:40px;padding:0 14px;border-radius:999px;font-size:13.5px}
+
+/* blocos repetidos */
+.pessoa+.pessoa{border-top:1px solid var(--line2);margin-top:24px;padding-top:8px}
+.ptop{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0 12px}
+.ph{margin:0;font-size:16px;font-weight:700;color:var(--blue)}
+h4.fh{margin:22px 0 12px;font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:12px}
+h4.fh::after{content:"";flex:1;height:1px;background:var(--line2)}
+.btn{font:inherit;font-weight:700;font-size:14px;border-radius:999px;min-height:46px;padding:0 18px;cursor:pointer;border:1px dashed #9DB5D3;background:#F7FAFE;color:var(--blue);width:100%;margin-top:18px;transition:all .3s var(--ease)}
+.btn:hover{background:#EAF1FB;border-style:solid}
+.btn.rm{border:1px solid var(--line);background:#fff;color:var(--muted);font-weight:600;font-size:13px;min-height:36px;width:auto;margin:0;padding:0 14px}
+.btn.rm:hover{color:var(--err);border-color:var(--err);background:#fff}
 .note{font-size:14px;color:var(--muted);margin:0}
+
+/* fotos */
+.aviso{margin:0 0 12px;padding:14px 16px;border-radius:12px;background:#EAF1FB;color:var(--navy);font-size:14.5px;line-height:1.55;border-left:3px solid var(--blue)}
+.upl{display:flex;align-items:center;justify-content:center;min-height:96px;border:1.5px dashed #9DB5D3;border-radius:14px;background:#F7FAFE;color:var(--blue);font-weight:700;cursor:pointer;transition:all .3s var(--ease)}
+.upl:hover{background:#EAF1FB;border-color:var(--blue)}
+.upl input{position:absolute;opacity:0;width:1px;height:1px;min-height:0}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:12px}
+.th{position:relative;aspect-ratio:4/3;border-radius:12px;overflow:hidden;box-shadow:var(--sh1)}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th button{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(10,28,51,.7);color:#fff;font-size:17px;line-height:1;cursor:pointer}
+
+/* documentos */
 .dgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 @media(min-width:700px){.dgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.dg{border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:#FBFCFE}
-.dg h3{margin:0 0 8px;font-size:14px;color:var(--ink);font-weight:600}
+.dg{border-radius:14px;padding:16px 18px;background:var(--stone);border:1px solid var(--line2)}
+.dg h3{margin:0 0 8px;font-size:14.5px;color:var(--navy);font-weight:700}
 .dg ul{margin:0;padding-left:18px;font-size:14.5px}
 .dg li{margin:3px 0}
-.dg.fi{border-color:#9DB5D3;background:var(--soft)}
-.regra{margin:16px 0 0;padding:12px 14px;border-left:3px solid var(--azul);background:var(--soft);border-radius:0 9px 9px 0;font-size:14px;color:#334155}
-footer{border-top:1px solid var(--line);background:#fff}
-footer .in{max-width:1180px;margin:0 auto;padding:18px 20px;font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
-@media(max-width:600px){.top .ct{display:none}.top img{height:28px}.hero .in{padding:26px 16px 24px}.layout{padding:16px 12px 30px}.facts{font-size:13px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
-.gerar{display:none;border-color:var(--azul)}
-body.admin .gerar{display:block}
-body.admin #sec-locatarios,body.admin #sec-moradores,body.admin #sec-docs,body.admin aside,body.admin .facts{display:none}
-body.admin .layout{grid-template-columns:minmax(0,1fr);max-width:860px}
-body.admin{padding-bottom:0}
-.lacts .off{opacity:.4;pointer-events:none}
-#linkGen:disabled{opacity:.6}
-.lacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
-input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
-@media print{.top,.hero,aside,footer{display:none}}
+.regra{margin:16px 0 0;padding:14px 16px;border-left:3px solid var(--blue);background:#EAF1FB;border-radius:0 12px 12px 0;font-size:14px;color:var(--navy)}
 
-textarea{font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid #CDD4DE;border-radius:9px;padding:10px 12px;width:100%;resize:vertical;min-height:84px}
-textarea:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(11,74,143,.15)}
-textarea.fix,input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
-h4.fh{margin:20px 0 10px;font-size:12.5px;font-weight:600;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--line)}
-.grid:empty{display:none}
-.admin-wrap{max-width:900px;margin:0 auto;padding:22px 20px 40px}
-.tipos{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+/* painel LHSP */
+.admin-wrap{max-width:920px;margin:-26px auto 0;padding:0 clamp(12px,4vw,40px) 56px;position:relative;z-index:2}
+.admin-wrap .card{box-shadow:var(--sh2)}
+.tipos{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 @media(min-width:640px){.tipos{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.tipo{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:11px;background:#fff;cursor:pointer;font:inherit;color:var(--txt);min-height:44px}
-.tipo b{font-size:15.5px;color:var(--ink);font-weight:600}
+.tipo{display:flex;flex-direction:column;gap:4px;text-align:left;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper);cursor:pointer;font:inherit;color:var(--ink);transition:transform .45s var(--ease),box-shadow .45s var(--ease),border-color .3s,background .3s}
+.tipo b{font-size:16px;color:var(--navy);font-weight:700}
 .tipo span{font-size:13.5px;color:var(--muted)}
-.tipo:hover{border-color:#9DB5D3;background:#FAFCFF}
-.tipo.on{border-color:var(--azul);background:var(--soft);box-shadow:0 0 0 2px rgba(11,74,143,.15)}
-.tipo.on b{color:var(--azul)}
+.tipo:hover{transform:translateY(-3px);box-shadow:var(--sh1);background:#fff}
+.tipo.on{border-color:var(--blue);background:#EAF1FB;box-shadow:0 0 0 3px rgba(2,63,135,.12)}
+.tipo.on b{color:var(--blue)}
+.lacts{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
 .lacts .off{opacity:.4;pointer-events:none}
 #linkGen:disabled{opacity:.6}
-.lacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
 body.admin{padding-bottom:0}
+
+/* rodapé */
+footer{background:var(--navy);color:#9FB0C6}
+footer .in{max-width:1240px;margin:0 auto;padding:22px clamp(16px,4vw,40px);font-size:12.5px;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between}
+@media(max-width:600px){.top .ct{display:none}.hero .in{padding:28px 16px 40px}.facts li{font-size:12.5px;padding:6px 12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+@media print{.top,.hero,aside,footer{display:none}}
 </style>
+
 </head>
 <body>
 <div class="top"><div class="in">
@@ -195,7 +233,7 @@ body.admin{padding-bottom:0}
 <nav class="nav" aria-label="Seções" id="nav"></nav>
 <div class="prog"><div class="t" id="ptxt"></div><div class="tr"><i id="pbar"></i></div></div>
 <div class="acts">
-<button type="button" class="send" id="send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 16.5l1-3.4A7 7 0 1110 17a7 7 0 01-3.2-.8l-3.3.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Enviar pelo WhatsApp</button>
+<button type="button" class="send" id="send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 16.5l1-3.4A7 7 0 1110 17a7 7 0 01-3.2-.8l-3.3.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="sendTxt">Enviar pelo WhatsApp</span></button>
 <button type="button" class="pdf" id="pdf"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9m0 0l-3.5-3.5M10 12l3.5-3.5M4 14.5V16a1 1 0 001 1h10a1 1 0 001-1v-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar PDF</button>
 </div>
 <p class="msg hide" id="msg" role="status"></p>
@@ -214,7 +252,12 @@ const FONE_LHSP='(11) 94166-3001';
 const LOGO=document.getElementById('logo').src;
 const UFS=['','AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
 const CIVIL=['','Solteiro(a)','Casado(a)','União estável','Divorciado(a)','Viúvo(a)'];
-const GARANTIAS=['Caução','Fiador','Seguro fiança','Título de capitalização'];
+const GARANTIAS=['Caução','Caucionante','Fiador','Seguro fiança','Título de capitalização','Carta fiança','Fiança digital'];
+const ORIGEM=['','Indicação','Site da LHSP','Zap Imóveis','Instagram','Placa no imóvel','Corretor parceiro','Outro'];
+const origem=()=>({id:'origem',t:'Informações finais',sub:'Como você chegou até a LHSP e observações.',fields:[{k:'origem',l:'Como conheceu a LHSP',t:'select',opts:ORIGEM,s:2},{k:'obs_final',l:'Observações',t:'textarea',s:4}]});
+const caucionante=()=>({id:'caucionante',t:'Caucionante',sub:'Pessoa que vai depositar a caução, se não for o locatário.',show:g=>g('im_gar')==='Caucionante',fields:[{k:'cc_nome',l:'Nome completo',s:2},{k:'cc_cpf',l:'CPF ou CNPJ',s:2},{k:'cc_tel',l:'Telefone',t:'tel',s:2},{k:'cc_email',l:'E-mail',t:'email',s:2},{k:'cc_rel',l:'Relação com o locatário',s:4}]});
+const garantiaInfo=()=>({id:'garantia',t:'Garantia',sub:'Informações da garantia escolhida.',show:g=>['Seguro fiança','Título de capitalização','Carta fiança','Fiança digital'].includes(g('im_gar')),fields:[{k:'gar_emp',l:'Seguradora ou empresa de preferência, se houver',s:4}]});
+const docGar=g=>{const x=g('im_gar');return x==='Fiador'?[DOC.fiador]:x==='Caucionante'?[DOC.caucionante]:['Seguro fiança','Título de capitalização','Carta fiança','Fiança digital'].includes(x)?[DOC.garantia]:[]};
 const casado=v=>v==='Casado(a)'||v==='União estável';
 
 /* ---------- blocos de campos ---------- */
@@ -222,7 +265,9 @@ const pessoa=(o={})=>[
 {k:'nome',l:'Nome completo',s:2,req:o.req},
 {k:'sexo',l:'Sexo',t:'radio',opts:['Feminino','Masculino'],s:2},
 {k:'nasc',l:'Data de nascimento',t:'date'},
+{k:'natural',l:'Local de nascimento'},
 {k:'nac',l:'Nacionalidade',v:'Brasileira'},
+{k:'escol',l:'Escolaridade',t:'select',opts:['','Fundamental','Médio','Superior','Pós-graduação']},
 {k:'civil',l:'Estado civil',t:'select',opts:CIVIL},
 {k:'prof',l:'Profissão'},
 {k:'cpf',l:'CPF',t:'cpf',req:o.req},
@@ -242,14 +287,17 @@ const profissional=()=>[
 {h:'Dados profissionais'},
 {k:'emp',l:'Empresa onde trabalha',s:2},{k:'empend',l:'Endereço da empresa',s:2},
 {k:'empcid',l:'Cidade'},{k:'empcep',l:'CEP',t:'cep'},{k:'emptel',l:'Telefone',t:'tel'},{k:'adm',l:'Data de admissão',t:'date'},
-{k:'sal',l:'Salário ou renda mensal',t:'brl',s:2}];
+{k:'sal',l:'Salário ou renda mensal',t:'brl'},{k:'outras',l:'Outras rendas',t:'brl'}];
 const conjuge=()=>[
 {h:'Cônjuge',show:g=>casado(g('civil'))},
 {k:'cj_nome',l:'Nome do cônjuge',s:2,show:g=>casado(g('civil'))},
 {k:'cj_cpf',l:'CPF do cônjuge',t:'cpf',show:g=>casado(g('civil'))},
 {k:'cj_rg',l:'RG do cônjuge',show:g=>casado(g('civil'))},
 {k:'cj_regime',l:'Regime de bens',t:'select',opts:['','Comunhão parcial','Comunhão universal','Separação total','Participação final nos aquestos'],s:2,show:g=>casado(g('civil'))&&g('civil')==='Casado(a)'},
-{k:'cj_prof',l:'Profissão do cônjuge',s:2,show:g=>casado(g('civil'))}];
+{k:'cj_prof',l:'Profissão do cônjuge',s:2,show:g=>casado(g('civil'))},
+{k:'cj_nasc',l:'Nascimento do cônjuge',t:'date',show:g=>casado(g('civil'))},
+{k:'cj_sal',l:'Renda do cônjuge',t:'brl',show:g=>casado(g('civil'))},
+{k:'cj_data',l:'Data do casamento',t:'date',show:g=>g('civil')==='Casado(a)'}];
 const imovelPretendido=(o={})=>({id:'imovel',t:'Imóvel pretendido',sub:'Dados do imóvel que você quer alugar.',fields:[
 {k:'im_end',l:'Endereço (rua, número, unidade, condomínio)',s:4},
 {k:'im_bairro',l:'Bairro'},{k:'im_cidade',l:'Cidade',v:'São Paulo'},
@@ -261,6 +309,11 @@ const moradores={id:'moradores',t:'Outros moradores',sub:'Pessoas que vão morar
 const fiadorPF=(p,lab)=>[...pessoa({req:false}),...residencia(),...profissional(),...conjuge(),
 {h:'Imóvel do fiador (sem ônus)'},
 {k:'fi_im_end',l:'Endereço do imóvel',s:4},{k:'fi_im_mat',l:'Matrícula'},{k:'fi_im_cart',l:'Cartório de registro'},{k:'fi_im_cid',l:'Cidade do imóvel',s:2}];
+const empresa=()=>[
+   {k:'pj_razao',l:'Razão social',s:4,req:true},{k:'pj_fant',l:'Nome fantasia',s:2},{k:'pj_cnpj',l:'CNPJ',t:'cnpj',req:true},{k:'pj_ie',l:'Inscrição estadual'},{k:'pj_im',l:'Inscrição municipal'},
+   {k:'pj_ativ',l:'Atividade principal',s:2},{k:'pj_const',l:'Data de constituição',t:'date'},{k:'pj_fat',l:'Faturamento mensal médio',t:'brl'},
+   {k:'pj_end',l:'Endereço da sede',s:4},{k:'pj_bairro',l:'Bairro'},{k:'pj_cidade',l:'Cidade'},{k:'pj_cep',l:'CEP',t:'cep'},{k:'pj_uf',l:'UF',t:'select',opts:UFS},
+   {k:'pj_email',l:'E-mail',t:'email',s:2},{k:'pj_tel',l:'Telefone',t:'tel',s:2,req:true}];
 const banco=()=>[
 {k:'bc_banco',l:'Banco',s:2},{k:'bc_ag',l:'Agência'},{k:'bc_conta',l:'Conta'},
 {k:'bc_tipo',l:'Tipo de conta',t:'radio',opts:['Corrente','Poupança'],s:2},
@@ -277,6 +330,10 @@ fiador:{t:'Do fiador',i:['RG, CPF e comprovante de residência','Comprovante de 
 pj:{t:'Da empresa',i:['Contrato social e última alteração','Cartão CNPJ','Última declaração do imposto de renda da empresa ou extratos bancários dos 3 últimos meses']},
 socios:{t:'Dos sócios ou representantes',i:['RG e CPF','Comprovante de residência']},
 prop:{t:'Do proprietário',i:['RG e CPF','Comprovante de residência','Certidão de casamento, se casado']},
+caucionante:{t:'Do caucionante',i:['RG e CPF, ou contrato social e cartão CNPJ','Comprovante de residência']},
+garantia:{t:'Da garantia',i:['A análise é feita pela seguradora ou empresa da garantia. Podem ser pedidos outros documentos nessa etapa']},
+comprador:{t:'Do comprador',i:['RG e CPF','Comprovante de residência','Certidão de nascimento ou casamento','Comprovante de renda, se houver financiamento']},
+fiadorpj:{t:'Da empresa fiadora',i:['Contrato social e última alteração','Cartão CNPJ','Último balanço ou declaração do imposto de renda da empresa','RG e CPF dos representantes']},
 imovel:{t:'Do imóvel',i:['Matrícula atualizada','Carnê do IPTU do ano','Último boleto de condomínio']}};
 const REGRA_RENDA='A renda dos locatários deve ser igual ou superior a 3 vezes o valor do aluguel. Outros documentos podem ser solicitados para confirmar os dados da ficha ou a renda declarada.';
 
@@ -287,24 +344,21 @@ const TIPOS={
  pre:['im_end','im_bairro','im_cidade','im_fin','im_inicio','im_gar'],
  req:[['l1_nome','nome do locatário'],['l1_cpf','CPF do locatário'],['l1_tel','telefone do locatário']],
  secs:()=>[imovelPretendido({garantia:true}),
-  {id:'locatarios',t:'Locatários',sub:'Quem assina o contrato. Até 4 pessoas.',rep:{p:'l',min:1,max:4,lab:'Locatário',add:'+ Adicionar outro locatário'},fields:[...pessoa({req:true}),...residencia(),...profissional()]},
+  {id:'locatarios',t:'Locatários',sub:'Quem assina o contrato. Até 4 pessoas.',rep:{p:'l',min:1,max:4,lab:'Locatário',add:'+ Adicionar outro locatário'},fields:[...pessoa({req:true}),...residencia(),...profissional(),...conjuge()]},
   {id:'fiador',t:'Fiador',sub:'Preencha se a garantia for fiador.',show:g=>g('im_gar')==='Fiador',rep:{p:'f',min:1,max:2,lab:'Fiador',add:'+ Adicionar outro fiador'},fields:fiadorPF()},
-  moradores],
- docs:g=>[DOC.basicos,DOC.clt,DOC.liberal,DOC.empresario,DOC.compl,...(g('im_gar')==='Fiador'?[DOC.fiador]:[])],regra:REGRA_RENDA},
+  caucionante(),garantiaInfo(),moradores,origem()],
+ docs:g=>[DOC.basicos,DOC.clt,DOC.liberal,DOC.empresario,DOC.compl,...docGar(g)],regra:REGRA_RENDA},
 'locacao-pj':{nome:'Locação: pessoa jurídica',curto:'Locação PJ',desc:'Empresa locatária, com sócios ou representantes.',eye:'Locação · Pessoa jurídica',tit:'Ficha cadastral de locação',
  lead:'Preencha os dados da empresa e dos representantes. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
  pre:['im_end','im_bairro','im_cidade','im_fin','im_inicio','im_gar'],
  req:[['pj_razao','razão social'],['pj_cnpj','CNPJ'],['r1_nome','nome do representante'],['r1_cpf','CPF do representante'],['pj_tel','telefone da empresa']],
  secs:()=>[imovelPretendido({garantia:true}),
-  {id:'empresa',t:'Empresa',sub:'Dados da empresa locatária.',fields:[
-   {k:'pj_razao',l:'Razão social',s:4,req:true},{k:'pj_fant',l:'Nome fantasia',s:2},{k:'pj_cnpj',l:'CNPJ',t:'cnpj',req:true},{k:'pj_ie',l:'Inscrição estadual ou municipal'},
-   {k:'pj_ativ',l:'Atividade principal',s:2},{k:'pj_const',l:'Data de constituição',t:'date'},{k:'pj_fat',l:'Faturamento mensal médio',t:'brl'},
-   {k:'pj_end',l:'Endereço da sede',s:4},{k:'pj_bairro',l:'Bairro'},{k:'pj_cidade',l:'Cidade'},{k:'pj_cep',l:'CEP',t:'cep'},{k:'pj_uf',l:'UF',t:'select',opts:UFS},
-   {k:'pj_email',l:'E-mail',t:'email',s:2},{k:'pj_tel',l:'Telefone',t:'tel',s:2,req:true}]},
+  {id:'empresa',t:'Empresa',sub:'Dados da empresa locatária.',fields:empresa()},
   {id:'representantes',t:'Sócios ou representantes',sub:'Quem assina pela empresa. Até 4 pessoas.',rep:{p:'r',min:1,max:4,lab:'Representante',add:'+ Adicionar outro representante'},fields:[...pessoa({req:true}),{k:'cargo',l:'Cargo na empresa',s:2},...residencia({tipo:false})]},
   {id:'fiador',t:'Fiador',sub:'Preencha se a garantia for fiador.',show:g=>g('im_gar')==='Fiador',rep:{p:'f',min:1,max:2,lab:'Fiador',add:'+ Adicionar outro fiador'},fields:fiadorPF()},
-  {id:'ocupantes',t:'Ocupantes do imóvel',sub:'Quem vai usar o imóvel, se for diferente dos representantes.',fields:[{k:'oc_obs',l:'Nomes e funções',t:'textarea',s:4}]}],
- docs:g=>[DOC.pj,DOC.socios,...(g('im_gar')==='Fiador'?[DOC.fiador]:[])],regra:'Outros documentos podem ser solicitados para confirmar os dados da ficha ou o faturamento declarado.'},
+  caucionante(),garantiaInfo(),
+  {id:'ocupantes',t:'Ocupantes do imóvel',sub:'Quem vai usar o imóvel, se for diferente dos representantes.',fields:[{k:'oc_obs',l:'Nomes e funções',t:'textarea',s:4}]},origem()],
+ docs:g=>[DOC.pj,DOC.socios,...docGar(g)],regra:'Outros documentos podem ser solicitados para confirmar os dados da ficha ou o faturamento declarado.'},
 'fiador':{nome:'Fiador',curto:'Fiador',desc:'Ficha separada para o fiador preencher.',eye:'Locação · Fiador',tit:'Ficha cadastral do fiador',
  lead:'Preencha os seus dados como fiador da locação. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
  pre:['im_end','im_bairro','loc_nome'],
@@ -322,29 +376,71 @@ const TIPOS={
    {k:'ad_end',l:'Endereço (rua, número, unidade)',s:4},{k:'ad_cond',l:'Condomínio',s:2},{k:'ad_bairro',l:'Bairro'},{k:'ad_cidade',l:'Cidade',v:'São Paulo'},
    {k:'ad_mat',l:'Matrícula'},{k:'ad_cart',l:'Cartório de registro'},{k:'ad_iptu',l:'Número do contribuinte (IPTU)',s:2},
    {k:'ad_adm',l:'Administradora do condomínio',s:2},{k:'ad_admcont',l:'Contato da administradora ou síndico',s:2}]},
-  {id:'repasse',t:'Conta para repasse',sub:'Conta onde a LHSP deposita os aluguéis.',fields:banco()}],
+  {id:'repasse',t:'Conta para repasse',sub:'Conta onde a LHSP deposita os aluguéis.',fields:banco()},origem()],
  docs:()=>[DOC.prop,DOC.imovel],regra:''},
-'captacao':{nome:'Captação de imóvel',curto:'Captação',desc:'Dados do imóvel e do proprietário para venda ou locação.',eye:'Captação · Imóvel',tit:'Ficha de captação de imóvel',
- lead:'Preencha os dados do imóvel e do proprietário. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
- pre:['cp_fin','cp_end','cp_bairro'],
+'captacao':{nome:'Captação de imóvel',curto:'Captação',desc:'Dados do imóvel e do proprietário para venda ou locação, com fotos de referência.',eye:'Captação · Imóvel',tit:'Ficha de captação de imóvel',
+ lead:'Preencha os dados do imóvel e do proprietário. No fim, envie a ficha para a LHSP ou salve em PDF.',upload:true,
+ pre:['cp_fin','cp_tipo','cp_end','cp_bairro'],
  req:[['cp_nome','nome do proprietário'],['cp_tel','telefone do proprietário'],['cp_end','endereço do imóvel']],
- secs:()=>[{id:'imovel',t:'Imóvel',sub:'Características e valores.',fields:[
-   {k:'cp_fin',l:'Finalidade',t:'select',opts:['Locação','Venda','Venda e locação'],s:2},{k:'cp_tipo',l:'Tipo de imóvel',t:'select',opts:['Apartamento','Casa','Sala comercial','Loja','Terreno','Outro'],s:2},
-   {k:'cp_end',l:'Endereço (rua, número, unidade)',s:4,req:true},{k:'cp_cond',l:'Condomínio',s:2},{k:'cp_bairro',l:'Bairro'},{k:'cp_cidade',l:'Cidade',v:'São Paulo'},
-   {k:'cp_area',l:'Área útil (m²)',t:'num'},{k:'cp_dorm',l:'Dormitórios',t:'num'},{k:'cp_suite',l:'Suítes',t:'num'},{k:'cp_ban',l:'Banheiros',t:'num'},
-   {k:'cp_vagas',l:'Vagas',t:'num'},{k:'cp_andar',l:'Andar',t:'num'},{k:'cp_mob',l:'Mobília',t:'select',opts:['','Sem mobília','Semimobiliado','Mobiliado'],s:2},
-   {k:'cp_estado',l:'Estado de conservação',t:'select',opts:['','Novo','Reformado','Bom','Precisa de reforma'],s:2},{k:'cp_reforma',l:'Reformas feitas',s:2},
-   {k:'cp_condv',l:'Condomínio mensal',t:'brl'},{k:'cp_iptuv',l:'IPTU mensal',t:'brl'},{k:'cp_venda',l:'Valor pretendido de venda',t:'brl',show:g=>g('cp_fin')!=='Locação'},{k:'cp_aluguel',l:'Aluguel pretendido',t:'brl',show:g=>g('cp_fin')!=='Venda'},
+ secs:()=>[{id:'imovel',t:'Imóvel',sub:'Localização e finalidade.',fields:[
+   {k:'cp_fin',l:'Finalidade',t:'select',opts:['Locação','Venda','Venda e locação','Temporada'],s:2},{k:'cp_tipo',l:'Tipo de imóvel',t:'select',opts:['Apartamento','Casa','Sala comercial','Loja','Galpão','Terreno','Rural','Outro'],s:2},
+   {k:'cp_sub',l:'Subcategoria',t:'select',opts:['','Padrão','Alto padrão','Cobertura','Cobertura duplex','Duplex','Triplex','Flat','Kitnet','Studio','Garden','Térrea','Sobrado','Casa em condomínio'],s:2,show:g=>['Apartamento','Casa'].includes(g('cp_tipo'))},
+   {k:'cp_end',l:'Endereço (rua, número, unidade)',s:4,req:true},{k:'cp_cond',l:'Condomínio',s:2,show:g=>!['Terreno','Rural'].includes(g('cp_tipo'))},{k:'cp_bairro',l:'Bairro'},{k:'cp_cidade',l:'Cidade',v:'São Paulo'},
+   {k:'cp_cep',l:'CEP',t:'cep'},{k:'cp_ref',l:'Ponto de referência',s:2}]},
+  {id:'caracteristicas',t:'Características',sub:'Áreas, cômodos, vagas e estado.',fields:[
+   {k:'cp_area',l:'Área útil (m²)',t:'num'},{k:'cp_areat',l:'Área total (m²)',t:'num'},
+   {k:'cp_dorm',l:'Dormitórios',t:'num',show:g=>!['Terreno','Galpão','Loja'].includes(g('cp_tipo'))},{k:'cp_suite',l:'Suítes',t:'num',show:g=>['Apartamento','Casa','Rural'].includes(g('cp_tipo'))},
+   {k:'cp_ban',l:'Banheiros',t:'num',show:g=>g('cp_tipo')!=='Terreno'},{k:'cp_lavabo',l:'Lavabos',t:'num',show:g=>['Apartamento','Casa'].includes(g('cp_tipo'))},{k:'cp_closet',l:'Closets',t:'num',show:g=>['Apartamento','Casa'].includes(g('cp_tipo'))},
+   {k:'cp_vagas',l:'Vagas',t:'num',show:g=>g('cp_tipo')!=='Terreno'},{k:'cp_vagascob',l:'Vagas cobertas',t:'num',show:g=>g('cp_tipo')!=='Terreno'},{k:'cp_vagatipo',l:'Tipo de vaga',t:'select',opts:['','Individual','Gaveta','Rotativa'],show:g=>g('cp_tipo')!=='Terreno'},
+   {k:'cp_andar',l:'Andar',t:'num',show:g=>['Apartamento','Sala comercial'].includes(g('cp_tipo'))},{k:'cp_ano',l:'Ano de construção',t:'num',show:g=>g('cp_tipo')!=='Terreno'},
+   {k:'cp_mob',l:'Mobília',t:'select',opts:['','Sem mobília','Semimobiliado','Mobiliado'],s:2,show:g=>!['Terreno','Galpão'].includes(g('cp_tipo'))},
+   {k:'cp_estado',l:'Estado de conservação',t:'select',opts:['','Novo','Reformado','Bom','Precisa de reforma'],s:2,show:g=>g('cp_tipo')!=='Terreno'},{k:'cp_reforma',l:'Reformas feitas',s:4,show:g=>g('cp_tipo')!=='Terreno'},
+   {k:'cp_carac',l:'Itens do imóvel e do condomínio',t:'checks',s:4,show:g=>g('cp_tipo')!=='Terreno',opts:['Aceita pet','Ar-condicionado','Armários embutidos','Varanda','Varanda gourmet','Churrasqueira','Área de serviço','Depósito','Gás encanado','Aquecimento a gás','Elevador','Portaria 24h','Piscina','Academia','Salão de festas','Espaço gourmet','Playground','Brinquedoteca','Quadra','Coworking','Lavanderia coletiva','Acesso sem degraus']}]},
+  {id:'valores',t:'Valores e documentação',sub:'Valores pretendidos, custos e situação do imóvel.',fields:[
+   {k:'cp_venda',l:'Valor pretendido de venda',t:'brl',s:2,show:g=>!['Locação','Temporada'].includes(g('cp_fin'))},{k:'cp_aluguel',l:'Aluguel pretendido',t:'brl',s:2,show:g=>g('cp_fin')!=='Venda'},
+   {k:'cp_condv',l:'Condomínio mensal',t:'brl'},{k:'cp_iptuv',l:'IPTU mensal',t:'brl'},{k:'cp_iptua',l:'IPTU anual',t:'brl'},{k:'cp_iptun',l:'Número do contribuinte (IPTU)'},
+   {k:'cp_mat',l:'Matrícula'},{k:'cp_cart',l:'Cartório de registro'},
    {k:'cp_ocup',l:'Ocupação atual',t:'select',opts:['','Desocupado','Ocupado pelo proprietário','Alugado'],s:2},{k:'cp_chaves',l:'Chaves',t:'select',opts:['','Com o proprietário','Na portaria','Com a imobiliária'],s:2},
    {k:'cp_pend',l:'Pendências (infiltração, documentação, dívidas)',t:'textarea',s:4}]},
   {id:'proprietario',t:'Proprietário',sub:'Contato e situação da negociação.',fields:[
    {k:'cp_nome',l:'Nome completo',s:2,req:true},{k:'cp_cpf',l:'CPF',t:'cpf'},{k:'cp_tel',l:'Telefone',t:'tel',req:true},{k:'cp_email',l:'E-mail',t:'email',s:2},
    {k:'cp_decide',l:'Quem decide junto (cônjuge, herdeiros, sócios)',s:2},
    {k:'cp_outra',l:'Já está com outra imobiliária?',t:'radio',opts:['Sim','Não'],s:2},{k:'cp_prazo',l:'Prazo para vender ou alugar',s:2},
-   {k:'cp_motivo',l:'Motivo da venda ou locação',s:4},{k:'cp_obs',l:'Observações',t:'textarea',s:4}]}],
- docs:()=>[DOC.imovel,DOC.prop],regra:''}
+   {k:'cp_motivo',l:'Motivo da venda ou locação',s:4}]},
+  {id:'fotos',t:'Fotos do imóvel',sub:'Opcional. Até 15 fotos para a nossa referência.',fields:[{k:'fotos',l:'Fotos',t:'photos',s:4}]},
+  origem()],
+ docs:()=>[DOC.imovel,DOC.prop],regra:''},
+'comprador':{nome:'Comprador: pessoa física',curto:'Comprador PF',desc:'Cliente pessoa física que vai comprar um imóvel.',eye:'Venda · Pessoa física',tit:'Ficha cadastral do comprador',
+ lead:'Preencha os seus dados para a proposta de compra. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['cv_end','cv_cond','cv_bairro','cv_corretor'],
+ req:[['c1_nome','nome'],['c1_cpf','CPF'],['c1_tel','telefone']],
+ secs:()=>[{id:'imovel',t:'Imóvel de interesse',sub:'Imóvel da proposta e forma de pagamento.',fields:[
+   {k:'cv_end',l:'Endereço (rua, número, unidade)',s:4},{k:'cv_cond',l:'Condomínio ou empreendimento',s:2},{k:'cv_bairro',l:'Bairro'},{k:'cv_cidade',l:'Cidade',v:'São Paulo'},
+   {k:'cv_corretor',l:'Corretor que atendeu',s:2,free:true},{k:'cv_pag',l:'Forma de pagamento',t:'select',opts:['','À vista','Financiamento','Financiamento com FGTS','Permuta','Outra'],s:2}]},
+  {id:'compradores',t:'Compradores',sub:'Quem vai constar na escritura. Até 4 pessoas.',rep:{p:'c',min:1,max:4,lab:'Comprador',add:'+ Adicionar outro comprador'},fields:[...pessoa({req:true}),...residencia({tipo:false}),...profissional(),...conjuge()]},
+  origem()],
+ docs:()=>[DOC.comprador],regra:''},
+'comprador-pj':{nome:'Comprador: pessoa jurídica',curto:'Comprador PJ',desc:'Empresa que vai comprar um imóvel.',eye:'Venda · Pessoa jurídica',tit:'Ficha cadastral do comprador',
+ lead:'Preencha os dados da empresa e dos representantes. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['cv_end','cv_cond','cv_bairro','cv_corretor'],
+ req:[['pj_razao','razão social'],['pj_cnpj','CNPJ'],['r1_nome','nome do representante'],['r1_cpf','CPF do representante'],['pj_tel','telefone da empresa']],
+ secs:()=>[{id:'imovel',t:'Imóvel de interesse',sub:'Imóvel da proposta e forma de pagamento.',fields:[
+   {k:'cv_end',l:'Endereço (rua, número, unidade)',s:4},{k:'cv_cond',l:'Condomínio ou empreendimento',s:2},{k:'cv_bairro',l:'Bairro'},{k:'cv_cidade',l:'Cidade',v:'São Paulo'},
+   {k:'cv_corretor',l:'Corretor que atendeu',s:2,free:true},{k:'cv_pag',l:'Forma de pagamento',t:'select',opts:['','À vista','Financiamento','Permuta','Outra'],s:2}]},
+  {id:'empresa',t:'Empresa',sub:'Dados da empresa compradora.',fields:empresa()},
+  {id:'representantes',t:'Sócios ou representantes',sub:'Quem assina pela empresa. Até 4 pessoas.',rep:{p:'r',min:1,max:4,lab:'Representante',add:'+ Adicionar outro representante'},fields:[...pessoa({req:true}),{k:'cargo',l:'Cargo na empresa',s:2},...residencia({tipo:false})]},
+  origem()],
+ docs:()=>[DOC.pj,DOC.socios],regra:''},
+'fiador-pj':{nome:'Fiador: pessoa jurídica',curto:'Fiador PJ',desc:'Empresa que vai ser fiadora da locação.',eye:'Locação · Fiador pessoa jurídica',tit:'Ficha cadastral do fiador',
+ lead:'Preencha os dados da empresa fiadora e dos representantes. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['im_end','im_bairro','loc_nome'],
+ req:[['pj_razao','razão social'],['pj_cnpj','CNPJ'],['r1_nome','nome do representante'],['r1_cpf','CPF do representante'],['pj_tel','telefone da empresa']],
+ secs:()=>[{id:'imovel',t:'Locação',sub:'Imóvel e locatário que a empresa vai afiançar.',fields:[{k:'im_end',l:'Endereço do imóvel (rua, número, unidade)',s:4},{k:'im_bairro',l:'Bairro',s:2},{k:'loc_nome',l:'Nome do locatário',s:2}]},
+  {id:'empresa',t:'Empresa fiadora',sub:'Dados da empresa.',fields:empresa()},
+  {id:'representantes',t:'Sócios ou representantes',sub:'Quem assina pela empresa. Até 4 pessoas.',rep:{p:'r',min:1,max:4,lab:'Representante',add:'+ Adicionar outro representante'},fields:[...pessoa({req:true}),{k:'cargo',l:'Cargo na empresa',s:2},...residencia({tipo:false})]}],
+ docs:()=>[DOC.fiadorpj],regra:''}
 };
-const ORDEM=['locacao-pf','locacao-pj','fiador','proprietario','captacao'];
+const ORDEM=['locacao-pf','locacao-pj','fiador','fiador-pj','proprietario','captacao','comprador','comprador-pj'];
 
 /* ---------- estado ---------- */
 const qs=new URLSearchParams(location.search);
@@ -364,8 +460,9 @@ num:v=>v.replace(/[^\d,]/g,'').slice(0,8)};
 const ph={cpf:'000.000.000-00',cnpj:'00.000.000/0000-00',cep:'00000-000',tel:'(11) 99999-9999',brl:'R$ 0,00'};
 const im={cpf:'numeric',cnpj:'numeric',cep:'numeric',tel:'tel',brl:'numeric',num:'decimal',email:'email'};
 
-function val(n){const el=form.elements[n]||document.getElementById('preForm').elements[n];if(!el)return'';if(el instanceof RadioNodeList)return el.value||'';return(el.value||'').trim()}
-const getter=pfx=>k=>{const n=pfx+k;const el=form.elements[n];if(el)return el instanceof RadioNodeList?el.value:el.value;return val(k)};
+function lista(el){return [...el].filter(x=>x.type==='checkbox'&&x.checked).map(x=>x.value).join(', ')}
+function val(n){const el=form.elements[n]||document.getElementById('preForm').elements[n];if(!el)return'';if(el instanceof RadioNodeList)return el[0]&&el[0].type==='checkbox'?lista(el):(el.value||'');if(el.type==='checkbox')return el.checked?el.value:'';return(el.value||'').trim()}
+const getter=pfx=>k=>{const n=pfx+k;if(form.elements[n])return val(n);return val(k)};
 
 function fieldHTML(f,name,g){
 if(f.h)return `<h4 class="fh${f.show?' cond':''}" data-show="${f.show?1:''}">${esc(f.h)}</h4>`;
@@ -373,6 +470,8 @@ const t=f.t||'text';const lk=locked[name];const req=f.req?' <span class="req">*<
 const cls=`f s${f.s||1}${f.show?' cond':''}`;
 let inp='';
 if(t==='radio'){inp=`<div class="seg">${f.opts.map(o=>`<label><input type="radio" name="${name}" value="${esc(o)}"${lk?' disabled':''}><span>${esc(o)}</span></label>`).join('')}</div>`;return `<div class="${cls}" data-f="${name}"><span class="lbl">${esc(f.l)}${req}</span>${inp}</div>`}
+if(t==='checks'){inp=`<div class="chips">${f.opts.map(o=>`<label><input type="checkbox" name="${name}" value="${esc(o)}"${lk?' disabled':''}><span>${esc(o)}</span></label>`).join('')}</div>`;return `<div class="${cls}" data-f="${name}"><span class="lbl">${esc(f.l)}</span>${inp}</div>`}
+if(t==='photos'){return `<div class="${cls}" data-f="${name}"><p class="aviso">A LHSP entra em contato para agendar a produção de fotos e vídeos no imóvel. Trabalhamos só com material próprio. As fotos enviadas aqui servem apenas como referência para a nossa equipe.</p><label class="upl" for="fotosIn"><input type="file" id="fotosIn" accept="image/*" multiple><span>Adicionar fotos</span></label><div class="thumbs" id="thumbs"></div></div>`}
 if(t==='select')inp=`<select id="${name}" name="${name}"${lk?' disabled class="fix"':''}>${f.opts.map(o=>`<option${o===''?' value=""':''}>${esc(o)}</option>`).join('')}</select>`;
 else if(t==='textarea')inp=`<textarea id="${name}" name="${name}" rows="3"${lk?' readonly class="fix"':''}></textarea>`;
 else{const ty=t==='date'?'date':t==='email'?'email':t==='tel'?'tel':'text';
@@ -384,7 +483,7 @@ function groupHTML(fields,pfx){return `<div class="grid">${fields.map(f=>fieldHT
 function render(){
 const T=TIPOS[tipo];const S=T.secs();
 document.getElementById('hEye').textContent=T.eye;document.getElementById('hTit').textContent=T.tit;document.getElementById('hLead').textContent=T.lead;
-document.title=T.tit+' · LHSP';
+document.title=T.tit+' · LHSP';document.getElementById('sendTxt').textContent=T.upload?'Enviar para a LHSP':'Enviar pelo WhatsApp';
 let html='';let n=0;const nav=[];
 for(const s of S){
 n++;nav.push(`<a href="#sec-${s.id}" data-s="${s.id}"><span class="k">${n}</span>${esc(s.t)}</a>`);
@@ -403,8 +502,8 @@ for(const s of S)if(s.rep)for(let i=1;i<=reps[s.id];i++)for(const f of s.fields)
 }
 
 /* ---------- valores ---------- */
-function snapshot(){const d={};for(const el of form.elements){if(!el.name)continue;if(el.type==='radio'){if(el.checked)d[el.name]=el.value}else if(el.value)d[el.name]=el.value}return d}
-function restore(d){for(const [k,v] of Object.entries(d||{})){const el=form.elements[k];if(!el)continue;if(el instanceof RadioNodeList){for(const r of el)r.checked=(r.value===v)}else el.value=v}}
+function snapshot(){const d={};for(const el of form.elements){if(!el.name)continue;if(el.type==='radio'){if(el.checked)d[el.name]=el.value}else if(el.type==='checkbox'){if(el.checked)d[el.name]=(d[el.name]?d[el.name]+'|':'')+el.value}else if(el.value)d[el.name]=el.value}return d}
+function restore(d){for(const [k,v] of Object.entries(d||{})){const el=form.elements[k];if(!el)continue;if(el instanceof RadioNodeList){const vs=String(v).split('|');for(const r of el)r.checked=r.type==='checkbox'?vs.includes(r.value):(r.value===v)}else if(el.type==='checkbox')el.checked=String(v).split('|').includes(el.value);else el.value=v}}
 function save(){try{localStorage.setItem(KEY(),JSON.stringify({reps,v:snapshot()}))}catch(e){}}
 function sync(){
 const T=TIPOS[tipo];const S=T.secs();const g0=getter('');
@@ -435,7 +534,8 @@ const T=TIPOS[tipo];const S=T.secs();const g0=getter('');const out=[];
 const rows=(fields,pfx)=>{const g=getter(pfx);const r=[];let sub=null;
 for(const f of fields){if(f.h){if(f.show&&!f.show(g)){sub='skip';continue}sub=f.h;r.push({h:f.h});continue}
 if(sub==='skip'&&f.show&&!f.show(g))continue;if(f.show&&!f.show(g))continue;
-const v=val(pfx+f.k);r.push([f.l,f.t==='date'?fmtData(v):v,f.s>=2||f.t==='textarea'?2:1])}return r};
+if(f.t==='photos'){r.push(['Fotos de referência enviadas',FOTOS.length?FOTOS.length+' foto(s), enviadas junto com a ficha':'Nenhuma',2]);continue}
+const v=val(pfx+f.k);r.push([f.l,f.t==='date'?fmtData(v):v,f.s>=2||f.t==='textarea'||f.t==='checks'?2:1])}return r};
 for(const s of S){if(s.show&&!s.show(g0))continue;
 if(s.rep){for(let i=1;i<=reps[s.id];i++)out.push({t:(s.rep.max>1||s.rep.min===0)?`${s.rep.lab} ${i}`:s.t,r:rows(s.fields,s.rep.p+i+'_')});
 if(s.rep.min===0){for(const b of out.filter(o=>o.t.startsWith(s.rep.lab+' ')))if(b.r.every(x=>x.h||!x[1]))out.splice(out.indexOf(b),1)}}
@@ -479,12 +579,27 @@ sync();const f=faltando();
 if(f.length){aviso('Para gerar a ficha, preencha os campos marcados em vermelho: '+f.map(x=>x.txt).join(', ')+'.');f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
 if(!window.jspdf){aviso('O gerador de PDF não carregou. Verifique a internet e recarregue a página.');return}
 try{const {doc,arquivo}=gerarPDF();const blob=doc.output('blob');const file=new File([blob],arquivo,{type:'application/pdf'});
+if(TIPOS[tipo].upload&&compartilhar){const bt=document.getElementById('send');bt.disabled=true;aviso('Enviando a ficha'+(FOTOS.length?' e '+FOTOS.length+' foto(s)':'')+'. Aguarde.',true);
+try{const fd=new FormData();fd.append('endereco',val('cp_end'));fd.append('proprietario',val('cp_nome'));fd.append('telefone',val('cp_tel'));fd.append('finalidade',val('cp_fin'));
+fd.append('pdf',file);FOTOS.forEach((f,i)=>fd.append('foto'+(i+1),new File([f.blob],'foto_'+String(i+1).padStart(2,'0')+'.jpg',{type:'image/jpeg'})));
+const r=await fetch(API+'/ficha-lhsp-captacao',{method:'POST',body:fd});if(!r.ok)throw 0;aviso('Ficha enviada para a LHSP. Obrigado. Entraremos em contato para agendar as fotos e vídeos do imóvel.',true)}
+catch(err){aviso('Não foi possível enviar agora. Verifique a internet e tente de novo, ou use Salvar PDF e envie pelo WhatsApp para '+FONE_LHSP+'.')}
+bt.disabled=false;return}
 const cel=/Android|iPhone|iPad/i.test(navigator.userAgent);
 if((compartilhar||cel)&&navigator.canShare&&navigator.canShare({files:[file]})){
 try{await navigator.share({files:[file],title:TIPOS[tipo].tit,text:TIPOS[tipo].tit+' - '+(val(TIPOS[tipo].req[0][0])||'')});aviso(compartilhar?'Escolha o WhatsApp e o contato da LHSP para enviar.':'PDF gerado.',true)}
 catch(err){if(err.name!=='AbortError')aviso('Não foi possível abrir o compartilhamento. Use Salvar PDF e envie o arquivo pelo WhatsApp.')}return}
 doc.save(arquivo);aviso('PDF salvo: '+arquivo+(compartilhar?'. Envie o arquivo pelo WhatsApp para a LHSP: '+FONE_LHSP+'.':''),true);
 }catch(err){aviso('Não foi possível gerar o PDF. Tente novamente.')}}
+
+/* ---------- fotos ---------- */
+let FOTOS=[];
+function comprime(file){return new Promise(res=>{const img=new Image();const u=URL.createObjectURL(file);img.onload=()=>{const M=1600;let w=img.naturalWidth,h=img.naturalHeight;const k=Math.min(1,M/Math.max(w,h));w=Math.round(w*k);h=Math.round(h*k);
+const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);c.toBlob(b=>{URL.revokeObjectURL(u);res(b)},'image/jpeg',.82)};img.onerror=()=>{URL.revokeObjectURL(u);res(null)};img.src=u})}
+function desenhaFotos(){const box=document.getElementById('thumbs');if(!box)return;box.innerHTML=FOTOS.map((f,i)=>`<div class="th"><img src="${f.url}" alt="Foto ${i+1}"><button type="button" data-delfoto="${i}" aria-label="Remover foto ${i+1}">×</button></div>`).join('')}
+form.addEventListener('change',async e=>{if(e.target.id!=='fotosIn')return;const fs=[...e.target.files].slice(0,15-FOTOS.length);e.target.value='';
+for(const f of fs){const b=await comprime(f);if(b)FOTOS.push({blob:b,url:URL.createObjectURL(b)})}desenhaFotos();if(FOTOS.length>=15)aviso('Limite de 15 fotos atingido.',true)});
+form.addEventListener('click',e=>{const b=e.target.closest('[data-delfoto]');if(!b)return;const i=+b.dataset.delfoto;URL.revokeObjectURL(FOTOS[i].url);FOTOS.splice(i,1);desenhaFotos()});
 
 /* ---------- eventos da ficha ---------- */
 form.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.mask)t.value=masks[t.dataset.mask](t.value);t.classList.remove('bad');sync()});
