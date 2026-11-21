@@ -137,6 +137,25 @@ body.admin{padding-bottom:0}
 .lacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
 input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 @media print{.top,.hero,aside,footer{display:none}}
+
+textarea{font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1px solid #CDD4DE;border-radius:9px;padding:10px 12px;width:100%;resize:vertical;min-height:84px}
+textarea:focus{outline:none;border-color:var(--azul);box-shadow:0 0 0 3px rgba(11,74,143,.15)}
+textarea.fix,input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
+h4.fh{margin:20px 0 10px;font-size:12.5px;font-weight:600;color:var(--muted);padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.grid:empty{display:none}
+.admin-wrap{max-width:900px;margin:0 auto;padding:22px 20px 40px}
+.tipos{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+@media(min-width:640px){.tipos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tipo{display:flex;flex-direction:column;gap:4px;text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:11px;background:#fff;cursor:pointer;font:inherit;color:var(--txt);min-height:44px}
+.tipo b{font-size:15.5px;color:var(--ink);font-weight:600}
+.tipo span{font-size:13.5px;color:var(--muted)}
+.tipo:hover{border-color:#9DB5D3;background:#FAFCFF}
+.tipo.on{border-color:var(--azul);background:var(--soft);box-shadow:0 0 0 2px rgba(11,74,143,.15)}
+.tipo.on b{color:var(--azul)}
+.lacts .off{opacity:.4;pointer-events:none}
+#linkGen:disabled{opacity:.6}
+.lacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.lacts>*{flex:1 1 200px}
+body.admin{padding-bottom:0}
 </style>
 </head>
 <body>
@@ -146,25 +165,35 @@ input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 </div></div>
 
 <section class="hero"><div class="in">
-<p class="eyebrow">Locação · Pessoa física</p>
-<h1>Ficha cadastral de locação</h1>
-<p class="lead">Preencha os dados dos locatários. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.</p>
-<ul class="facts">
+<p class="eyebrow" id="hEye">Ficha cadastral</p>
+<h1 id="hTit">Ficha cadastral</h1>
+<p class="lead" id="hLead"></p>
+<ul class="facts" id="hFacts">
 <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="#9FC1EA" stroke-width="1.5"/><path d="M8 4.5V8l2.5 1.5" stroke="#9FC1EA" stroke-width="1.5" stroke-linecap="round"/></svg>Cerca de 5 minutos</li>
 <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="#9FC1EA" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" stroke="#9FC1EA" stroke-width="1.5"/></svg>Os dados vão só para a LHSP</li>
-<li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="#9FC1EA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Obrigatórios: nome, CPF e telefone</li>
+<li><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="#9FC1EA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="hReq">Campos com * são obrigatórios</span></li>
 </ul>
 </div></section>
 
-<div class="layout">
+<!-- PAINEL LHSP -->
+<div class="admin-wrap hide" id="admin">
+<section class="card"><div class="ch"><span class="n">1</span><div><h2>Escolha a ficha</h2><p>Uso interno da LHSP. Escolha o tipo, preencha o que já sabe e gere o link do cliente.</p></div></div>
+<div class="cb"><div class="tipos" id="tipos"></div></div></section>
+<section class="card hide" id="admPre"><div class="ch"><span class="n">2</span><div><h2 id="admPreTit">Dados que a LHSP já preenche</h2><p>O cliente recebe esses campos preenchidos e travados.</p></div></div>
+<div class="cb"><form id="preForm" novalidate></form></div></section>
+<section class="card hide" id="admLink"><div class="ch"><span class="n">3</span><div><h2>Link para o cliente</h2><p>Gere o link e envie pelo WhatsApp.</p></div></div>
+<div class="cb">
+<label for="linkOut">Link gerado</label><input id="linkOut" readonly>
+<div class="lacts"><button type="button" class="send" id="linkGen">Gerar link</button><a class="send off" id="linkWa" href="https://wa.me/" target="_blank" rel="noopener">Enviar link pelo WhatsApp</a><button type="button" class="pdf off" id="linkCopy">Copiar link</button></div>
+<p class="note" id="linkMsg" style="margin-top:8px"></p>
+</div></section>
+</div>
+
+<!-- FICHA DO CLIENTE -->
+<div class="layout" id="cliente">
 <aside><div class="box">
-<nav class="nav" aria-label="Seções">
-<a href="#sec-imovel" class="on"><span class="k">1</span>Imóvel pretendido</a>
-<a href="#sec-locatarios"><span class="k">2</span>Locatários</a>
-<a href="#sec-moradores"><span class="k">3</span>Outros moradores</a>
-<a href="#sec-docs"><span class="k">4</span>Documentos</a>
-</nav>
-<div class="prog"><div class="t" id="ptxt">Obrigatórios: 0 de 3</div><div class="tr"><i id="pbar"></i></div></div>
+<nav class="nav" aria-label="Seções" id="nav"></nav>
+<div class="prog"><div class="t" id="ptxt"></div><div class="tr"><i id="pbar"></i></div></div>
 <div class="acts">
 <button type="button" class="send" id="send"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 16.5l1-3.4A7 7 0 1110 17a7 7 0 01-3.2-.8l-3.3.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Enviar pelo WhatsApp</button>
 <button type="button" class="pdf" id="pdf"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v9m0 0l-3.5-3.5M10 12l3.5-3.5M4 14.5V16a1 1 0 001 1h10a1 1 0 001-1v-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Salvar PDF</button>
@@ -172,63 +201,7 @@ input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 <p class="msg hide" id="msg" role="status"></p>
 <p class="hint">O que você digitar fica guardado neste aparelho até o envio. Envie o PDF para a LHSP pelo WhatsApp: (11) 94166-3001.</p>
 </div></aside>
-
-<main>
-<form id="ficha" autocomplete="on" novalidate>
-<section class="card" id="sec-imovel">
-<div class="ch"><span class="n">1</span><div><h2>Imóvel pretendido</h2><p>Dados do imóvel que você quer alugar.</p></div></div>
-<div class="cb"><div class="grid">
-<div class="f s4"><label for="im_end">Endereço (rua, número, unidade, condomínio)</label><input id="im_end" name="im_end"></div>
-<div class="f s1"><label for="im_bairro">Bairro</label><input id="im_bairro" name="im_bairro"></div>
-<div class="f s1"><label for="im_cidade">Cidade</label><input id="im_cidade" name="im_cidade" value="São Paulo"></div>
-<div class="f s1"><label for="im_fin">Finalidade</label><select id="im_fin" name="im_fin"><option>Residencial</option><option>Comercial</option></select></div>
-<div class="f s1"><label for="im_inicio">Início da locação</label><input id="im_inicio" name="im_inicio" type="date"></div>
-<div class="f s2"><label for="im_gar">Garantia locatícia</label><select id="im_gar" name="im_gar"><option>Caução</option><option>Fiador</option><option>Seguro fiança</option><option>Título de capitalização</option></select></div>
-</div></div>
-</section>
-
-<section class="card gerar" id="sec-gerar">
-<div class="ch"><span class="n">L</span><div><h2>Link para o cliente</h2><p>Uso interno da LHSP. Preencha o imóvel acima e toque em Gerar link.</p></div></div>
-<div class="cb">
-<label for="linkOut">Link gerado</label>
-<input id="linkOut" readonly>
-<div class="lacts"><button type="button" class="send" id="linkGen">Gerar link</button><a class="send off" id="linkWa" href="https://wa.me/" target="_blank" rel="noopener">Enviar link pelo WhatsApp</a><button type="button" class="pdf off" id="linkCopy">Copiar link</button></div>
-<p class="note" id="linkMsg" style="margin-top:8px"></p>
-</div>
-</section>
-
-<section class="card" id="sec-locatarios">
-<div class="ch"><span class="n">2</span><div><h2>Locatários</h2><p>Quem assina o contrato. Até 4 pessoas.</p></div></div>
-<div class="cb">
-<div id="pessoas"></div>
-<button type="button" class="btn" id="addP">+ Adicionar outro locatário</button>
-</div>
-</section>
-
-<section class="card" id="sec-moradores">
-<div class="ch"><span class="n">3</span><div><h2>Outros moradores</h2><p>Pessoas que vão morar no imóvel e não assinam o contrato.</p></div></div>
-<div class="cb">
-<div id="moradores"></div>
-<button type="button" class="btn" id="addM" style="margin-top:0">+ Adicionar morador</button>
-</div>
-</section>
-
-<section class="card" id="sec-docs">
-<div class="ch"><span class="n">4</span><div><h2>Documentos para a análise</h2><p>Envie pelo WhatsApp, em foto ou PDF, depois da ficha.</p></div></div>
-<div class="cb">
-<div class="dgrid">
-<div class="dg"><h3>Documentos básicos</h3><ul><li>RG e CPF</li><li>Comprovante de residência</li><li>Comprovante de renda, conforme ao lado</li></ul></div>
-<div class="dg"><h3>Empregado registrado</h3><ul><li>Carteira profissional (identificação, registro, atualização salarial)</li><li>3 últimos holerites</li></ul></div>
-<div class="dg"><h3>Profissional liberal</h3><ul><li>Extratos bancários dos 3 últimos meses</li><li>Contrato de prestação de serviços</li></ul></div>
-<div class="dg"><h3>Empresário</h3><ul><li>Extratos bancários dos 3 últimos meses</li><li>DECORE</li><li>Contrato social e última alteração</li></ul></div>
-<div class="dg"><h3>Documentos complementares</h3><ul><li>Última declaração do imposto de renda</li><li>Contrato de locação onde reside atualmente</li><li>3 últimos comprovantes de pagamento do aluguel atual</li></ul></div>
-<div class="dg fi hide" id="docFiador"><h3>Se a garantia for fiador</h3><ul><li>Certidão de nascimento, casamento ou declaração de união estável</li><li>Matrícula atualizada de pelo menos 1 imóvel sem ônus</li></ul></div>
-</div>
-<p class="regra">A renda dos locatários deve ser igual ou superior a 3 vezes o valor do aluguel. Outros documentos podem ser solicitados para confirmar os dados da ficha ou a renda declarada.</p>
-</div>
-</section>
-</form>
-</main>
+<main><form id="ficha" autocomplete="on" novalidate></form></main>
 </div>
 
 <footer><div class="in"><span>LHSP Administração Imobiliária Ltda. · CNPJ 48.807.898/0001-30 · CRECI 42.381-J</span><span>Rua Martiniano de Carvalho, 864, sala 806, Bela Vista, São Paulo/SP</span></div></footer>
@@ -236,164 +209,242 @@ input.fix,select.fix{background-color:#F3F6FA;color:var(--ink);opacity:1}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 {
-const UF=['','AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
-const ufOpts=UF.map(u=>`<option>${u}</option>`).join('');
-const KEY='lhsp_ficha_v1';
+const API='https://lucanob.app.n8n.cloud/webhook';
+const FONE_LHSP='(11) 94166-3001';
 const LOGO=document.getElementById('logo').src;
-let DL=null;try{if(window.claude&&window.claude.use){window.claude.use('downloads').then(d=>{DL=d}).catch(()=>{})}}catch(e){}
-function progresso(){
-let tot=0,ok=0;for(let i=1;i<=nP;i++){for(const c of ['nome','cpf','tel']){tot++;const el=form.elements[`p${i}_${c}`];if(!el)continue;const v=el.value.replace(/\D/g,'');if(c==='nome'?el.value.trim():c==='cpf'?v.length===11:v.length>=10)ok++}}
-const pct=tot?Math.round(ok/tot*100):0;const bar=document.getElementById('pbar');if(bar)bar.style.width=pct+'%';const tx=document.getElementById('ptxt');if(tx)tx.textContent=ok===tot?'Campos obrigatórios preenchidos':`Obrigatórios: ${ok} de ${tot}`;
-}
-const elP=document.getElementById('pessoas'),elM=document.getElementById('moradores');
+const UFS=['','AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
+const CIVIL=['','Solteiro(a)','Casado(a)','União estável','Divorciado(a)','Viúvo(a)'];
+const GARANTIAS=['Caução','Fiador','Seguro fiança','Título de capitalização'];
+const casado=v=>v==='Casado(a)'||v==='União estável';
+
+/* ---------- blocos de campos ---------- */
+const pessoa=(o={})=>[
+{k:'nome',l:'Nome completo',s:2,req:o.req},
+{k:'sexo',l:'Sexo',t:'radio',opts:['Feminino','Masculino'],s:2},
+{k:'nasc',l:'Data de nascimento',t:'date'},
+{k:'nac',l:'Nacionalidade',v:'Brasileira'},
+{k:'civil',l:'Estado civil',t:'select',opts:CIVIL},
+{k:'prof',l:'Profissão'},
+{k:'cpf',l:'CPF',t:'cpf',req:o.req},
+{k:'rg',l:'RG'},
+{k:'org',l:'Órgão emissor',ph:'SSP'},
+{k:'uf',l:'UF',t:'select',opts:UFS},
+{k:'email',l:'E-mail',t:'email',s:2},
+{k:'tel',l:'Telefone',t:'tel',s:2,req:o.req}];
+const residencia=(o={})=>[
+{h:'Residência atual'},
+{k:'end',l:'Endereço',s:4},
+{k:'bairro',l:'Bairro'},{k:'cidade',l:'Cidade'},{k:'cep',l:'CEP',t:'cep'},
+...(o.tipo===false?[]:[{k:'tipo',l:'Tipo de residência',t:'radio',opts:['Própria','Alugada']},
+{k:'imob',l:'Imobiliária ou proprietário',s:2,show:g=>g('tipo')==='Alugada'},
+{k:'imobtel',l:'Telefone da imobiliária ou proprietário',t:'tel',s:2,show:g=>g('tipo')==='Alugada'}])];
+const profissional=()=>[
+{h:'Dados profissionais'},
+{k:'emp',l:'Empresa onde trabalha',s:2},{k:'empend',l:'Endereço da empresa',s:2},
+{k:'empcid',l:'Cidade'},{k:'empcep',l:'CEP',t:'cep'},{k:'emptel',l:'Telefone',t:'tel'},{k:'adm',l:'Data de admissão',t:'date'},
+{k:'sal',l:'Salário ou renda mensal',t:'brl',s:2}];
+const conjuge=()=>[
+{h:'Cônjuge',show:g=>casado(g('civil'))},
+{k:'cj_nome',l:'Nome do cônjuge',s:2,show:g=>casado(g('civil'))},
+{k:'cj_cpf',l:'CPF do cônjuge',t:'cpf',show:g=>casado(g('civil'))},
+{k:'cj_rg',l:'RG do cônjuge',show:g=>casado(g('civil'))},
+{k:'cj_regime',l:'Regime de bens',t:'select',opts:['','Comunhão parcial','Comunhão universal','Separação total','Participação final nos aquestos'],s:2,show:g=>casado(g('civil'))&&g('civil')==='Casado(a)'},
+{k:'cj_prof',l:'Profissão do cônjuge',s:2,show:g=>casado(g('civil'))}];
+const imovelPretendido=(o={})=>({id:'imovel',t:'Imóvel pretendido',sub:'Dados do imóvel que você quer alugar.',fields:[
+{k:'im_end',l:'Endereço (rua, número, unidade, condomínio)',s:4},
+{k:'im_bairro',l:'Bairro'},{k:'im_cidade',l:'Cidade',v:'São Paulo'},
+{k:'im_fin',l:'Finalidade',t:'select',opts:['Residencial','Comercial']},
+{k:'im_inicio',l:'Início da locação',t:'date',free:true},
+...(o.garantia?[{k:'im_gar',l:'Garantia locatícia',t:'select',opts:GARANTIAS,s:2}]:[])]});
+const moradores={id:'moradores',t:'Outros moradores',sub:'Pessoas que vão morar no imóvel e não assinam o contrato.',rep:{p:'m',min:0,max:4,lab:'Morador',add:'+ Adicionar morador'},fields:[
+{k:'nome',l:'Nome',s:2},{k:'cpf',l:'CPF',t:'cpf',s:2},{k:'rg',l:'RG',s:2},{k:'org',l:'Órgão emissor'},{k:'uf',l:'UF',t:'select',opts:UFS}]};
+const fiadorPF=(p,lab)=>[...pessoa({req:false}),...residencia(),...profissional(),...conjuge(),
+{h:'Imóvel do fiador (sem ônus)'},
+{k:'fi_im_end',l:'Endereço do imóvel',s:4},{k:'fi_im_mat',l:'Matrícula'},{k:'fi_im_cart',l:'Cartório de registro'},{k:'fi_im_cid',l:'Cidade do imóvel',s:2}];
+const banco=()=>[
+{k:'bc_banco',l:'Banco',s:2},{k:'bc_ag',l:'Agência'},{k:'bc_conta',l:'Conta'},
+{k:'bc_tipo',l:'Tipo de conta',t:'radio',opts:['Corrente','Poupança'],s:2},
+{k:'bc_tit',l:'Titular da conta',s:2},{k:'bc_doc',l:'CPF ou CNPJ do titular',s:2},{k:'bc_pix',l:'Chave PIX',s:2}];
+
+/* ---------- documentos ---------- */
+const DOC={
+basicos:{t:'Documentos básicos',i:['RG e CPF','Comprovante de residência','Comprovante de renda, conforme ao lado']},
+clt:{t:'Empregado registrado',i:['Carteira profissional (identificação, registro, atualização salarial)','3 últimos holerites']},
+liberal:{t:'Profissional liberal',i:['Extratos bancários dos 3 últimos meses','Contrato de prestação de serviços']},
+empresario:{t:'Empresário',i:['Extratos bancários dos 3 últimos meses','DECORE','Contrato social e última alteração']},
+compl:{t:'Documentos complementares',i:['Última declaração do imposto de renda','Contrato de locação onde reside atualmente','3 últimos comprovantes de pagamento do aluguel atual']},
+fiador:{t:'Do fiador',i:['RG, CPF e comprovante de residência','Comprovante de renda','Certidão de nascimento, casamento ou declaração de união estável','Matrícula atualizada de pelo menos 1 imóvel sem ônus']},
+pj:{t:'Da empresa',i:['Contrato social e última alteração','Cartão CNPJ','Última declaração do imposto de renda da empresa ou extratos bancários dos 3 últimos meses']},
+socios:{t:'Dos sócios ou representantes',i:['RG e CPF','Comprovante de residência']},
+prop:{t:'Do proprietário',i:['RG e CPF','Comprovante de residência','Certidão de casamento, se casado']},
+imovel:{t:'Do imóvel',i:['Matrícula atualizada','Carnê do IPTU do ano','Último boleto de condomínio']}};
+const REGRA_RENDA='A renda dos locatários deve ser igual ou superior a 3 vezes o valor do aluguel. Outros documentos podem ser solicitados para confirmar os dados da ficha ou a renda declarada.';
+
+/* ---------- tipos de ficha ---------- */
+const TIPOS={
+'locacao-pf':{nome:'Locação: pessoa física',curto:'Locação PF',desc:'Locatário pessoa física. Caução, fiador, seguro fiança ou título.',eye:'Locação · Pessoa física',tit:'Ficha cadastral de locação',
+ lead:'Preencha os dados dos locatários. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['im_end','im_bairro','im_cidade','im_fin','im_inicio','im_gar'],
+ req:[['l1_nome','nome do locatário'],['l1_cpf','CPF do locatário'],['l1_tel','telefone do locatário']],
+ secs:()=>[imovelPretendido({garantia:true}),
+  {id:'locatarios',t:'Locatários',sub:'Quem assina o contrato. Até 4 pessoas.',rep:{p:'l',min:1,max:4,lab:'Locatário',add:'+ Adicionar outro locatário'},fields:[...pessoa({req:true}),...residencia(),...profissional()]},
+  {id:'fiador',t:'Fiador',sub:'Preencha se a garantia for fiador.',show:g=>g('im_gar')==='Fiador',rep:{p:'f',min:1,max:2,lab:'Fiador',add:'+ Adicionar outro fiador'},fields:fiadorPF()},
+  moradores],
+ docs:g=>[DOC.basicos,DOC.clt,DOC.liberal,DOC.empresario,DOC.compl,...(g('im_gar')==='Fiador'?[DOC.fiador]:[])],regra:REGRA_RENDA},
+'locacao-pj':{nome:'Locação: pessoa jurídica',curto:'Locação PJ',desc:'Empresa locatária, com sócios ou representantes.',eye:'Locação · Pessoa jurídica',tit:'Ficha cadastral de locação',
+ lead:'Preencha os dados da empresa e dos representantes. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['im_end','im_bairro','im_cidade','im_fin','im_inicio','im_gar'],
+ req:[['pj_razao','razão social'],['pj_cnpj','CNPJ'],['r1_nome','nome do representante'],['r1_cpf','CPF do representante'],['pj_tel','telefone da empresa']],
+ secs:()=>[imovelPretendido({garantia:true}),
+  {id:'empresa',t:'Empresa',sub:'Dados da empresa locatária.',fields:[
+   {k:'pj_razao',l:'Razão social',s:4,req:true},{k:'pj_fant',l:'Nome fantasia',s:2},{k:'pj_cnpj',l:'CNPJ',t:'cnpj',req:true},{k:'pj_ie',l:'Inscrição estadual ou municipal'},
+   {k:'pj_ativ',l:'Atividade principal',s:2},{k:'pj_const',l:'Data de constituição',t:'date'},{k:'pj_fat',l:'Faturamento mensal médio',t:'brl'},
+   {k:'pj_end',l:'Endereço da sede',s:4},{k:'pj_bairro',l:'Bairro'},{k:'pj_cidade',l:'Cidade'},{k:'pj_cep',l:'CEP',t:'cep'},{k:'pj_uf',l:'UF',t:'select',opts:UFS},
+   {k:'pj_email',l:'E-mail',t:'email',s:2},{k:'pj_tel',l:'Telefone',t:'tel',s:2,req:true}]},
+  {id:'representantes',t:'Sócios ou representantes',sub:'Quem assina pela empresa. Até 4 pessoas.',rep:{p:'r',min:1,max:4,lab:'Representante',add:'+ Adicionar outro representante'},fields:[...pessoa({req:true}),{k:'cargo',l:'Cargo na empresa',s:2},...residencia({tipo:false})]},
+  {id:'fiador',t:'Fiador',sub:'Preencha se a garantia for fiador.',show:g=>g('im_gar')==='Fiador',rep:{p:'f',min:1,max:2,lab:'Fiador',add:'+ Adicionar outro fiador'},fields:fiadorPF()},
+  {id:'ocupantes',t:'Ocupantes do imóvel',sub:'Quem vai usar o imóvel, se for diferente dos representantes.',fields:[{k:'oc_obs',l:'Nomes e funções',t:'textarea',s:4}]}],
+ docs:g=>[DOC.pj,DOC.socios,...(g('im_gar')==='Fiador'?[DOC.fiador]:[])],regra:'Outros documentos podem ser solicitados para confirmar os dados da ficha ou o faturamento declarado.'},
+'fiador':{nome:'Fiador',curto:'Fiador',desc:'Ficha separada para o fiador preencher.',eye:'Locação · Fiador',tit:'Ficha cadastral do fiador',
+ lead:'Preencha os seus dados como fiador da locação. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['im_end','im_bairro','loc_nome'],
+ req:[['f1_nome','nome'],['f1_cpf','CPF'],['f1_tel','telefone']],
+ secs:()=>[{id:'imovel',t:'Locação',sub:'Imóvel e locatário que você vai afiançar.',fields:[{k:'im_end',l:'Endereço do imóvel (rua, número, unidade)',s:4},{k:'im_bairro',l:'Bairro',s:2},{k:'loc_nome',l:'Nome do locatário',s:2}]},
+  {id:'fiador',t:'Seus dados',sub:'Dados pessoais, residência, renda e cônjuge.',rep:{p:'f',min:1,max:1,lab:'Fiador'},fields:fiadorPF().map(x=>['nome','cpf','tel'].includes(x.k)?{...x,req:true}:x)},
+  {id:'imoveis',t:'Outros imóveis',sub:'Outros imóveis em seu nome, se houver.',fields:[{k:'out_imoveis',l:'Endereço, matrícula e cartório de cada imóvel',t:'textarea',s:4}]}],
+ docs:()=>[DOC.fiador],regra:'O imóvel dado em garantia deve estar em São Paulo ou na Grande São Paulo, sem penhora, hipoteca ou alienação fiduciária. A renda deve ser igual ou superior a 3 vezes o valor do aluguel.'},
+'proprietario':{nome:'Proprietário: administração',curto:'Proprietário',desc:'Cadastro do proprietário para administrar o imóvel e fazer os repasses.',eye:'Administração · Proprietário',tit:'Ficha cadastral do proprietário',
+ lead:'Preencha os seus dados, do imóvel e da conta para os repasses. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['ad_end','ad_cond','ad_bairro','ad_cidade'],
+ req:[['p1_nome','nome'],['p1_cpf','CPF'],['p1_tel','telefone']],
+ secs:()=>[{id:'proprietarios',t:'Proprietários',sub:'Quem consta na matrícula. Até 3 pessoas.',rep:{p:'p',min:1,max:3,lab:'Proprietário',add:'+ Adicionar outro proprietário'},fields:[...pessoa({req:true}),...residencia({tipo:false}),...conjuge()]},
+  {id:'imovel',t:'Imóvel',sub:'Imóvel que a LHSP vai administrar.',fields:[
+   {k:'ad_end',l:'Endereço (rua, número, unidade)',s:4},{k:'ad_cond',l:'Condomínio',s:2},{k:'ad_bairro',l:'Bairro'},{k:'ad_cidade',l:'Cidade',v:'São Paulo'},
+   {k:'ad_mat',l:'Matrícula'},{k:'ad_cart',l:'Cartório de registro'},{k:'ad_iptu',l:'Número do contribuinte (IPTU)',s:2},
+   {k:'ad_adm',l:'Administradora do condomínio',s:2},{k:'ad_admcont',l:'Contato da administradora ou síndico',s:2}]},
+  {id:'repasse',t:'Conta para repasse',sub:'Conta onde a LHSP deposita os aluguéis.',fields:banco()}],
+ docs:()=>[DOC.prop,DOC.imovel],regra:''},
+'captacao':{nome:'Captação de imóvel',curto:'Captação',desc:'Dados do imóvel e do proprietário para venda ou locação.',eye:'Captação · Imóvel',tit:'Ficha de captação de imóvel',
+ lead:'Preencha os dados do imóvel e do proprietário. No fim, envie a ficha em PDF pelo WhatsApp para a LHSP ou salve o arquivo.',
+ pre:['cp_fin','cp_end','cp_bairro'],
+ req:[['cp_nome','nome do proprietário'],['cp_tel','telefone do proprietário'],['cp_end','endereço do imóvel']],
+ secs:()=>[{id:'imovel',t:'Imóvel',sub:'Características e valores.',fields:[
+   {k:'cp_fin',l:'Finalidade',t:'select',opts:['Locação','Venda','Venda e locação'],s:2},{k:'cp_tipo',l:'Tipo de imóvel',t:'select',opts:['Apartamento','Casa','Sala comercial','Loja','Terreno','Outro'],s:2},
+   {k:'cp_end',l:'Endereço (rua, número, unidade)',s:4,req:true},{k:'cp_cond',l:'Condomínio',s:2},{k:'cp_bairro',l:'Bairro'},{k:'cp_cidade',l:'Cidade',v:'São Paulo'},
+   {k:'cp_area',l:'Área útil (m²)',t:'num'},{k:'cp_dorm',l:'Dormitórios',t:'num'},{k:'cp_suite',l:'Suítes',t:'num'},{k:'cp_ban',l:'Banheiros',t:'num'},
+   {k:'cp_vagas',l:'Vagas',t:'num'},{k:'cp_andar',l:'Andar',t:'num'},{k:'cp_mob',l:'Mobília',t:'select',opts:['','Sem mobília','Semimobiliado','Mobiliado'],s:2},
+   {k:'cp_estado',l:'Estado de conservação',t:'select',opts:['','Novo','Reformado','Bom','Precisa de reforma'],s:2},{k:'cp_reforma',l:'Reformas feitas',s:2},
+   {k:'cp_condv',l:'Condomínio mensal',t:'brl'},{k:'cp_iptuv',l:'IPTU mensal',t:'brl'},{k:'cp_venda',l:'Valor pretendido de venda',t:'brl',show:g=>g('cp_fin')!=='Locação'},{k:'cp_aluguel',l:'Aluguel pretendido',t:'brl',show:g=>g('cp_fin')!=='Venda'},
+   {k:'cp_ocup',l:'Ocupação atual',t:'select',opts:['','Desocupado','Ocupado pelo proprietário','Alugado'],s:2},{k:'cp_chaves',l:'Chaves',t:'select',opts:['','Com o proprietário','Na portaria','Com a imobiliária'],s:2},
+   {k:'cp_pend',l:'Pendências (infiltração, documentação, dívidas)',t:'textarea',s:4}]},
+  {id:'proprietario',t:'Proprietário',sub:'Contato e situação da negociação.',fields:[
+   {k:'cp_nome',l:'Nome completo',s:2,req:true},{k:'cp_cpf',l:'CPF',t:'cpf'},{k:'cp_tel',l:'Telefone',t:'tel',req:true},{k:'cp_email',l:'E-mail',t:'email',s:2},
+   {k:'cp_decide',l:'Quem decide junto (cônjuge, herdeiros, sócios)',s:2},
+   {k:'cp_outra',l:'Já está com outra imobiliária?',t:'radio',opts:['Sim','Não'],s:2},{k:'cp_prazo',l:'Prazo para vender ou alugar',s:2},
+   {k:'cp_motivo',l:'Motivo da venda ou locação',s:4},{k:'cp_obs',l:'Observações',t:'textarea',s:4}]}],
+ docs:()=>[DOC.imovel,DOC.prop],regra:''}
+};
+const ORDEM=['locacao-pf','locacao-pj','fiador','proprietario','captacao'];
+
+/* ---------- estado ---------- */
+const qs=new URLSearchParams(location.search);
+const admin=location.hash==='#gerar';
+let tipo=TIPOS[qs.get('t')]?qs.get('t'):'locacao-pf';
+let reps={};let locked={};let pre={};
 const form=document.getElementById('ficha');
-let nP=0,nM=0;
-
-const pessoaHTML=i=>`<div class="pessoa" data-p="${i}">
-<div class="ptop"><h3 class="ph">Locatário ${i}</h3>${i>1?'<button type="button" class="btn rm" data-rm="p">Remover</button>':''}</div>
-<div class="grid">
-<div class="f s2"><label for="p${i}_nome">Nome completo <span class="req">*</span></label><input id="p${i}_nome" name="p${i}_nome" autocomplete="${i==1?'name':'off'}"></div>
-<div class="f s2"><span class="lbl">Sexo</span><div class="seg"><label><input type="radio" name="p${i}_sexo" value="Feminino"><span>Feminino</span></label><label><input type="radio" name="p${i}_sexo" value="Masculino"><span>Masculino</span></label></div></div>
-<div class="f s1"><label for="p${i}_nasc">Data de nascimento</label><input id="p${i}_nasc" name="p${i}_nasc" type="date"></div>
-<div class="f s1"><label for="p${i}_nac">Nacionalidade</label><input id="p${i}_nac" name="p${i}_nac" value="Brasileira"></div>
-<div class="f s1"><label for="p${i}_civil">Estado civil</label><select id="p${i}_civil" name="p${i}_civil"><option></option><option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select></div>
-<div class="f s1"><label for="p${i}_prof">Profissão</label><input id="p${i}_prof" name="p${i}_prof"></div>
-<div class="f s1"><label for="p${i}_cpf">CPF <span class="req">*</span></label><input id="p${i}_cpf" name="p${i}_cpf" inputmode="numeric" data-mask="cpf" placeholder="000.000.000-00"></div>
-<div class="f s1"><label for="p${i}_rg">RG</label><input id="p${i}_rg" name="p${i}_rg"></div>
-<div class="f s1"><label for="p${i}_org">Órgão emissor</label><input id="p${i}_org" name="p${i}_org" placeholder="SSP"></div>
-<div class="f s1"><label for="p${i}_uf">UF</label><select id="p${i}_uf" name="p${i}_uf">${ufOpts}</select></div>
-<div class="f s2"><label for="p${i}_email">E-mail</label><input id="p${i}_email" name="p${i}_email" type="email" inputmode="email" autocomplete="${i==1?'email':'off'}"></div>
-<div class="f s2"><label for="p${i}_tel">Telefone <span class="req">*</span></label><input id="p${i}_tel" name="p${i}_tel" type="tel" inputmode="tel" data-mask="tel" placeholder="(11) 99999-9999"></div>
-</div>
-<h4>Residência atual</h4>
-<div class="grid">
-<div class="f s4"><label for="p${i}_end">Endereço</label><input id="p${i}_end" name="p${i}_end"></div>
-<div class="f s1"><label for="p${i}_bairro">Bairro</label><input id="p${i}_bairro" name="p${i}_bairro"></div>
-<div class="f s1"><label for="p${i}_cidade">Cidade</label><input id="p${i}_cidade" name="p${i}_cidade"></div>
-<div class="f s1"><label for="p${i}_cep">CEP</label><input id="p${i}_cep" name="p${i}_cep" inputmode="numeric" data-mask="cep" placeholder="00000-000"></div>
-<div class="f s1"><span class="lbl">Tipo de residência</span><div class="seg"><label><input type="radio" name="p${i}_tipo" value="Própria"><span>Própria</span></label><label><input type="radio" name="p${i}_tipo" value="Alugada"><span>Alugada</span></label></div></div>
-<div class="f s2 alug hide"><label for="p${i}_imob">Imobiliária ou proprietário</label><input id="p${i}_imob" name="p${i}_imob"></div>
-<div class="f s2 alug hide"><label for="p${i}_imobtel">Telefone da imobiliária ou proprietário</label><input id="p${i}_imobtel" name="p${i}_imobtel" type="tel" inputmode="tel" data-mask="tel"></div>
-</div>
-<h4>Dados profissionais</h4>
-<div class="grid">
-<div class="f s2"><label for="p${i}_emp">Empresa onde trabalha</label><input id="p${i}_emp" name="p${i}_emp"></div>
-<div class="f s2"><label for="p${i}_empend">Endereço da empresa</label><input id="p${i}_empend" name="p${i}_empend"></div>
-<div class="f s1"><label for="p${i}_empcid">Cidade</label><input id="p${i}_empcid" name="p${i}_empcid"></div>
-<div class="f s1"><label for="p${i}_empcep">CEP</label><input id="p${i}_empcep" name="p${i}_empcep" inputmode="numeric" data-mask="cep"></div>
-<div class="f s1"><label for="p${i}_emptel">Telefone</label><input id="p${i}_emptel" name="p${i}_emptel" type="tel" inputmode="tel" data-mask="tel"></div>
-<div class="f s1"><label for="p${i}_adm">Data de admissão</label><input id="p${i}_adm" name="p${i}_adm" type="date"></div>
-<div class="f s2"><label for="p${i}_sal">Salário ou renda mensal</label><input id="p${i}_sal" name="p${i}_sal" inputmode="numeric" data-mask="brl" placeholder="R$ 0,00"></div>
-</div></div>`;
-
-const moradorHTML=i=>`<div class="pessoa" data-m="${i}">
-<div class="ptop"><h3 class="ph">Morador ${i}</h3><button type="button" class="btn rm" data-rm="m">Remover</button></div>
-<div class="grid">
-<div class="f s2"><label for="m${i}_nome">Nome</label><input id="m${i}_nome" name="m${i}_nome"></div>
-<div class="f s2"><label for="m${i}_cpf">CPF</label><input id="m${i}_cpf" name="m${i}_cpf" inputmode="numeric" data-mask="cpf"></div>
-<div class="f s2"><label for="m${i}_rg">RG</label><input id="m${i}_rg" name="m${i}_rg"></div>
-<div class="f s1"><label for="m${i}_org">Órgão emissor</label><input id="m${i}_org" name="m${i}_org"></div>
-<div class="f s1"><label for="m${i}_uf">UF</label><select id="m${i}_uf" name="m${i}_uf">${ufOpts}</select></div>
-</div></div>`;
-
-const addP=()=>{if(nP>=4)return;nP++;elP.insertAdjacentHTML('beforeend',pessoaHTML(nP));sync()};
-const addM=()=>{if(nM>=4)return;nM++;elM.insertAdjacentHTML('beforeend',moradorHTML(nM));sync()};
-
+const KEY=()=>'lhsp_ficha2_'+tipo+(qs.get('c')?'_'+qs.get('c'):'');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const masks={
 cpf:v=>{v=v.replace(/\D/g,'').slice(0,11);return v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d{1,2})$/,'.$1-$2')},
+cnpj:v=>{v=v.replace(/\D/g,'').slice(0,14);return v.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2')},
 cep:v=>{v=v.replace(/\D/g,'').slice(0,8);return v.length>5?v.slice(0,5)+'-'+v.slice(5):v},
 tel:v=>{v=v.replace(/\D/g,'').slice(0,11);if(!v)return'';if(v.length<=2)return'('+v;if(v.length<=6)return`(${v.slice(0,2)}) ${v.slice(2)}`;if(v.length<=10)return`(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;return`(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`},
-brl:v=>{v=v.replace(/\D/g,'').slice(0,10);if(!v)return'';const n=(parseInt(v,10)/100).toFixed(2).split('.');return'R$ '+n[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+n[1]}
-};
+brl:v=>{v=v.replace(/\D/g,'').slice(0,11);if(!v)return'';const n=(parseInt(v,10)/100).toFixed(2).split('.');return'R$ '+n[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+n[1]},
+num:v=>v.replace(/[^\d,]/g,'').slice(0,8)};
+const ph={cpf:'000.000.000-00',cnpj:'00.000.000/0000-00',cep:'00000-000',tel:'(11) 99999-9999',brl:'R$ 0,00'};
+const im={cpf:'numeric',cnpj:'numeric',cep:'numeric',tel:'tel',brl:'numeric',num:'decimal',email:'email'};
 
-const val=n=>{const els=form.elements[n];if(!els)return'';if(els instanceof RadioNodeList){return els.value||''}return(els.value||'').trim()};
-const fmtData=d=>d?d.split('-').reverse().join('/'):'';
+function val(n){const el=form.elements[n]||document.getElementById('preForm').elements[n];if(!el)return'';if(el instanceof RadioNodeList)return el.value||'';return(el.value||'').trim()}
+const getter=pfx=>k=>{const n=pfx+k;const el=form.elements[n];if(el)return el instanceof RadioNodeList?el.value:el.value;return val(k)};
 
-function save(){try{const d={nP,nM,v:{}};for(const el of form.elements){if(!el.name)continue;if(el.type==='radio'){if(el.checked)d.v[el.name]=el.value}else d.v[el.name]=el.value}localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}}
-function load(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(!d)return false;for(let i=0;i<Math.max(1,d.nP||1);i++)addP();for(let i=0;i<(d.nM||0);i++)addM();for(const [k,v] of Object.entries(d.v||{})){const el=form.elements[k];if(!el)continue;if(el instanceof RadioNodeList){for(const r of el)r.checked=(r.value===v)}else el.value=v}return true}catch(e){return false}}
+function fieldHTML(f,name,g){
+if(f.h)return `<h4 class="fh${f.show?' cond':''}" data-show="${f.show?1:''}">${esc(f.h)}</h4>`;
+const t=f.t||'text';const lk=locked[name];const req=f.req?' <span class="req">*</span>':'';
+const cls=`f s${f.s||1}${f.show?' cond':''}`;
+let inp='';
+if(t==='radio'){inp=`<div class="seg">${f.opts.map(o=>`<label><input type="radio" name="${name}" value="${esc(o)}"${lk?' disabled':''}><span>${esc(o)}</span></label>`).join('')}</div>`;return `<div class="${cls}" data-f="${name}"><span class="lbl">${esc(f.l)}${req}</span>${inp}</div>`}
+if(t==='select')inp=`<select id="${name}" name="${name}"${lk?' disabled class="fix"':''}>${f.opts.map(o=>`<option${o===''?' value=""':''}>${esc(o)}</option>`).join('')}</select>`;
+else if(t==='textarea')inp=`<textarea id="${name}" name="${name}" rows="3"${lk?' readonly class="fix"':''}></textarea>`;
+else{const ty=t==='date'?'date':t==='email'?'email':t==='tel'?'tel':'text';
+inp=`<input id="${name}" name="${name}" type="${ty}"${im[t]?` inputmode="${im[t]}"`:''}${masks[t]?` data-mask="${t}"`:''}${ph[t]?` placeholder="${ph[t]}"`:''}${f.ph?` placeholder="${esc(f.ph)}"`:''}${lk?' readonly class="fix"':''}>`}
+return `<div class="${cls}" data-f="${name}"><label for="${name}">${esc(f.l)}${req}</label>${inp}</div>`;
+}
+function groupHTML(fields,pfx){return `<div class="grid">${fields.map(f=>fieldHTML(f,f.h?'':pfx+f.k)).join('')}</div>`.replace(/<h4/g,'</div><h4').replace(/<\/h4>/g,'</h4><div class="grid">')}
 
+function render(){
+const T=TIPOS[tipo];const S=T.secs();
+document.getElementById('hEye').textContent=T.eye;document.getElementById('hTit').textContent=T.tit;document.getElementById('hLead').textContent=T.lead;
+document.title=T.tit+' · LHSP';
+let html='';let n=0;const nav=[];
+for(const s of S){
+n++;nav.push(`<a href="#sec-${s.id}" data-s="${s.id}"><span class="k">${n}</span>${esc(s.t)}</a>`);
+let body='';
+if(s.rep){const r=s.rep;const q=reps[s.id]??r.min;reps[s.id]=q;
+for(let i=1;i<=q;i++){const pfx=r.p+i+'_';body+=`<div class="pessoa" data-rep="${s.id}" data-i="${i}">${(r.max>1||r.min===0)?`<div class="ptop"><h3 class="ph">${esc(r.lab)} ${i}</h3>${i>r.min?`<button type="button" class="btn rm" data-rm="${s.id}" data-i="${i}">Remover</button>`:''}</div>`:''}${groupHTML(s.fields,pfx)}</div>`}
+if(r.add&&q<r.max)body+=`<button type="button" class="btn" data-add="${s.id}">${esc(r.add)}</button>`;}
+else body=groupHTML(s.fields,'');
+html+=`<section class="card${s.show?' cond-sec':''}" id="sec-${s.id}" data-sec="${s.id}"><div class="ch"><span class="n">${n}</span><div><h2>${esc(s.t)}</h2><p>${esc(s.sub||'')}</p></div></div><div class="cb">${body}</div></section>`;
+}
+n++;nav.push(`<a href="#sec-docs"><span class="k">${n}</span>Documentos</a>`);
+html+=`<section class="card" id="sec-docs"><div class="ch"><span class="n">${n}</span><div><h2>Documentos para a análise</h2><p>Envie pelo WhatsApp, em foto ou PDF, depois da ficha.</p></div></div><div class="cb"><div class="dgrid" id="docs"></div><p class="regra${T.regra?'':' hide'}">${esc(T.regra)}</p></div></section>`;
+form.innerHTML=html;document.getElementById('nav').innerHTML=nav.join('');
+for(const s of S)for(const f of (s.rep?[]:s.fields))if(f.v&&form.elements[f.k]&&!form.elements[f.k].value)form.elements[f.k].value=f.v;
+for(const s of S)if(s.rep)for(let i=1;i<=reps[s.id];i++)for(const f of s.fields)if(f.v){const el=form.elements[s.rep.p+i+'_'+f.k];if(el&&!el.value)el.value=f.v}
+}
+
+/* ---------- valores ---------- */
+function snapshot(){const d={};for(const el of form.elements){if(!el.name)continue;if(el.type==='radio'){if(el.checked)d[el.name]=el.value}else if(el.value)d[el.name]=el.value}return d}
+function restore(d){for(const [k,v] of Object.entries(d||{})){const el=form.elements[k];if(!el)continue;if(el instanceof RadioNodeList){for(const r of el)r.checked=(r.value===v)}else el.value=v}}
+function save(){try{localStorage.setItem(KEY(),JSON.stringify({reps,v:snapshot()}))}catch(e){}}
 function sync(){
-document.getElementById('docFiador').classList.toggle('hide',val('im_gar')!=='Fiador');
-for(let i=1;i<=nP;i++){const al=val(`p${i}_tipo`)==='Alugada';document.querySelectorAll(`[data-p="${i}"] .alug`).forEach(e=>e.classList.toggle('hide',!al))}
-document.getElementById('addP').classList.toggle('hide',nP>=4);
-document.getElementById('addM').classList.toggle('hide',nM>=4);
-progresso();
-
-save();
+const T=TIPOS[tipo];const S=T.secs();const g0=getter('');
+for(const s of S){const sec=document.getElementById('sec-'+s.id);if(s.show)sec.classList.toggle('hide',!s.show(g0));
+const roots=s.rep?[...sec.querySelectorAll('[data-rep]')].map(b=>[b,s.rep.p+b.dataset.i+'_']):[[sec,'']];
+for(const [root,pfx] of roots){const g=getter(pfx);let curH=null;
+for(const f of s.fields){if(f.h){curH=f;continue}
+const box=root.querySelector(`[data-f="${pfx+f.k}"]`);if(box&&f.show)box.classList.toggle('hide',!f.show(g));}
+root.querySelectorAll('h4.fh[data-show="1"]').forEach(h=>{const fh=s.fields.find(x=>x.h===h.textContent);if(fh&&fh.show)h.classList.toggle('hide',!fh.show(g))});}}
+document.querySelectorAll('.nav a').forEach(a=>{const s=document.querySelector(a.getAttribute('href'));a.classList.toggle('hide',!!s&&s.classList.contains('hide'))});
+document.getElementById('docs').innerHTML=T.docs(g0).map(d=>`<div class="dg"><h3>${esc(d.t)}</h3><ul>${d.i.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+progresso();save();
 }
-
-function faltando(){
-const f=[];form.querySelectorAll('input.bad').forEach(e=>e.classList.remove('bad'));
-for(let i=1;i<=nP;i++){
-for(const [c,r] of [['nome','nome'],['cpf','CPF'],['tel','telefone']]){const el=form.elements[`p${i}_${c}`];let ok=el.value.trim()!=='';if(c==='cpf')ok=el.value.replace(/\D/g,'').length===11;if(c==='tel')ok=el.value.replace(/\D/g,'').length>=10;if(!ok){el.classList.add('bad');f.push({el,txt:`${r} do locatário ${i}`})}}
-}
-return f;
-}
+function faltando(){const T=TIPOS[tipo];const f=[];form.querySelectorAll('.bad').forEach(e=>e.classList.remove('bad'));
+for(const [n,txt] of T.req){const el=form.elements[n];if(!el)continue;const v=el.value.trim();const d=v.replace(/\D/g,'');
+let ok=!!v;if(el.dataset.mask==='cpf')ok=d.length===11;if(el.dataset.mask==='cnpj')ok=d.length===14;if(el.dataset.mask==='tel')ok=d.length>=10;
+if(!ok){el.classList.add('bad');f.push({el,txt})}}return f}
+function progresso(){const T=TIPOS[tipo];let ok=0;for(const [n] of T.req){const el=form.elements[n];if(!el)continue;const v=el.value.trim(),d=v.replace(/\D/g,'');
+if(el.dataset.mask==='cpf'?d.length===11:el.dataset.mask==='cnpj'?d.length===14:el.dataset.mask==='tel'?d.length>=10:!!v)ok++}
+const tot=T.req.length;document.getElementById('pbar').style.width=(tot?ok/tot*100:0)+'%';document.getElementById('ptxt').textContent=ok===tot?'Campos obrigatórios preenchidos':`Obrigatórios: ${ok} de ${tot}`}
 const msg=document.getElementById('msg');
-function faltaTxt(f){const por={};for(const x of f){const m=x.txt.match(/^(.*) do locatário (\d+)$/);(por[m[2]]=por[m[2]]||[]).push(m[1])}
-return 'Para gerar a ficha, preencha os campos marcados em vermelho: '+Object.entries(por).map(([i,c])=>c.join(', ')+(nP>1?' do locatário '+i:'')).join('; ')+'.'}
-const aviso=(t,ok)=>{msg.textContent=t;msg.classList.toggle('ok',!!ok);msg.classList.remove('hide');clearTimeout(aviso.t);aviso.t=setTimeout(()=>msg.classList.add('hide'),5000)};
+const aviso=(t,ok)=>{msg.textContent=t;msg.classList.toggle('ok',!!ok);msg.classList.remove('hide');clearTimeout(aviso.t);aviso.t=setTimeout(()=>msg.classList.add('hide'),7000)};
+const fmtData=d=>/^\d{4}-\d{2}-\d{2}$/.test(d)?d.split('-').reverse().join('/'):d;
 
-// rebuild sequence numbers after removal
-function renumera(){
-const snap=[];for(const el of form.elements){if(el.name)snap.push(el)}
-const dados={v:{}};for(const el of snap){if(el.type==='radio'){if(el.checked)dados.v[el.name]=el.value}else dados.v[el.name]=el.value}
-return dados.v;
-}
-function remover(tipo,idx){
-const v=renumera();const total=tipo==='p'?nP:nM;const pre=tipo==='p'?'p':'m';
-const novo={};
-for(const [k,x] of Object.entries(v)){const m=k.match(/^([pm])(\d+)_(.+)$/);if(!m||m[1]!==pre){novo[k]=x;continue}const n=+m[2];if(n===idx)continue;novo[`${pre}${n>idx?n-1:n}_${m[3]}`]=x}
-if(tipo==='p'){elP.innerHTML='';nP=0;for(let i=1;i<total;i++)addP()}else{elM.innerHTML='';nM=0;for(let i=1;i<total;i++)addM()}
-for(const [k,x] of Object.entries(novo)){const el=form.elements[k];if(!el)continue;if(el instanceof RadioNodeList){for(const r of el)r.checked=(r.value===x)}else el.value=x}
-sync();
-}
-
-form.addEventListener('input',e=>{const t=e.target;if(t.dataset.mask){t.value=masks[t.dataset.mask](t.value)}t.classList.remove('bad');sync()});
-form.addEventListener('change',sync);
-form.addEventListener('submit',e=>e.preventDefault());
-form.addEventListener('click',e=>{const b=e.target.closest('[data-rm]');if(!b)return;const box=b.closest('[data-p],[data-m]');const tipo=b.dataset.rm;const idx=+(box.dataset.p||box.dataset.m);remover(tipo,idx)});
-document.getElementById('addP').addEventListener('click',addP);
-document.getElementById('addM').addEventListener('click',addM);
-
-document.getElementById('send').addEventListener('click',async()=>{
-sync();const f=faltando();
-if(f.length){aviso(faltaTxt(f));f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
-if(!window.jspdf){aviso('O gerador de PDF não carregou. Verifique a internet e recarregue a página.');return}
-try{const {doc,arquivo}=gerarPDF();const blob=doc.output('blob');
-const fileObj=new File([blob],arquivo,{type:'application/pdf'});
-if(navigator.canShare&&navigator.canShare({files:[fileObj]})){
-try{await navigator.share({files:[fileObj],title:'Ficha cadastral LHSP',text:'Ficha cadastral de locação - '+(val('p1_nome')||'')});aviso('Escolha o WhatsApp e o contato da LHSP para enviar.',true)}catch(err){if(err.name!=='AbortError')aviso('Não foi possível abrir o compartilhamento. Use Salvar PDF e envie o arquivo pelo WhatsApp.')}
-return}
-doc.save(arquivo);aviso('PDF salvo: '+arquivo+'. Envie o arquivo pelo WhatsApp para a LHSP: (11) 94166-3001.',true);
-}catch(err){aviso('Não foi possível gerar o PDF. Tente novamente.')}
-});
-
+/* ---------- dados para o PDF ---------- */
 function dados(){
-const S=[];
-S.push({t:'Imóvel pretendido',r:[['Endereço',val('im_end'),2],['Bairro',val('im_bairro')],['Cidade',val('im_cidade')],['Finalidade',val('im_fin')],['Início da locação',fmtData(val('im_inicio'))],['Garantia locatícia',val('im_gar'),2]]});
-for(let i=1;i<=nP;i++){
-const p=k=>val(`p${i}_${k}`);
-S.push({t:`Locatário ${i}`,r:[['Nome',p('nome'),2],['Sexo',p('sexo')],['Data de nascimento',fmtData(p('nasc'))],['Nacionalidade',p('nac')],['Estado civil',p('civil')],['Profissão',p('prof')],['CPF',p('cpf')],['RG',p('rg')],['Órgão emissor / UF',[p('org'),p('uf')].filter(Boolean).join(' / ')],['E-mail',p('email')],['Telefone',p('tel')]]});
-const res=[['Endereço',p('end'),2],['Bairro',p('bairro')],['Cidade',p('cidade')],['CEP',p('cep')],['Tipo de residência',p('tipo')]];
-if(p('tipo')==='Alugada')res.push(['Imobiliária ou proprietário',p('imob')],['Telefone da imobiliária',p('imobtel')]);
-S.push({t:`Locatário ${i}: residência atual`,r:res});
-S.push({t:`Locatário ${i}: dados profissionais`,r:[['Empresa',p('emp'),2],['Endereço da empresa',p('empend'),2],['Cidade',p('empcid')],['CEP',p('empcep')],['Telefone',p('emptel')],['Data de admissão',fmtData(p('adm'))],['Salário ou renda mensal',p('sal')]]});
-}
-for(let i=1;i<=nM;i++){const m=k=>val(`m${i}_${k}`);if(!m('nome'))continue;
-S.push({t:`Morador ${i}`,r:[['Nome',m('nome'),2],['CPF',m('cpf')],['RG',m('rg')],['Órgão emissor / UF',[m('org'),m('uf')].filter(Boolean).join(' / ')]]})}
-return S;
-}
-function texto(){
-let t='*FICHA CADASTRAL DE LOCAÇÃO - LHSP*\n';
-for(const s of dados()){const l=s.r.filter(x=>x[1]).map(x=>`${x[0]}: ${x[1]}`);if(!l.length)continue;t+=`\n*${s.t}*\n`+l.join('\n')+'\n'}
-return t.trim();
-}
+const T=TIPOS[tipo];const S=T.secs();const g0=getter('');const out=[];
+const rows=(fields,pfx)=>{const g=getter(pfx);const r=[];let sub=null;
+for(const f of fields){if(f.h){if(f.show&&!f.show(g)){sub='skip';continue}sub=f.h;r.push({h:f.h});continue}
+if(sub==='skip'&&f.show&&!f.show(g))continue;if(f.show&&!f.show(g))continue;
+const v=val(pfx+f.k);r.push([f.l,f.t==='date'?fmtData(v):v,f.s>=2||f.t==='textarea'?2:1])}return r};
+for(const s of S){if(s.show&&!s.show(g0))continue;
+if(s.rep){for(let i=1;i<=reps[s.id];i++)out.push({t:(s.rep.max>1||s.rep.min===0)?`${s.rep.lab} ${i}`:s.t,r:rows(s.fields,s.rep.p+i+'_')});
+if(s.rep.min===0){for(const b of out.filter(o=>o.t.startsWith(s.rep.lab+' ')))if(b.r.every(x=>x.h||!x[1]))out.splice(out.indexOf(b),1)}}
+else out.push({t:s.t,r:rows(s.fields,'')})}
+return out}
 
 function gerarPDF(){
-const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
-const W=210,M=16,CW=W-2*M,AZ=[11,74,143],NV=[11,27,46],TX=[34,38,43],LB=[107,114,128];
-let y=14;
+const T=TIPOS[tipo];const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});
+const W=210,M=16,CW=W-2*M,AZ=[11,74,143],NV=[11,27,46],TX=[34,38,43],LB=[107,114,128];let y=14;
 const rodape=()=>{doc.setDrawColor(...AZ);doc.setLineWidth(.4);doc.line(M,283,W-M,283);doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...LB);
 doc.text(['LHSP Administração Imobiliária Ltda. · CNPJ 48.807.898/0001-30 · CRECI 42.381-J','Rua Martiniano de Carvalho, 864, sala 806, Bela Vista, São Paulo/SP · (11) 94166-3001'],W/2,288,{align:'center'})};
 const novaPag=()=>{rodape();doc.addPage();y=16};
@@ -401,99 +452,106 @@ try{doc.addImage(LOGO,'PNG',M,y,44,9.8)}catch(e){}
 doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(...LB);
 doc.text(['LHSP Administração Imobiliária Ltda.','CNPJ 48.807.898/0001-30 · CRECI 42.381-J','Rua Martiniano de Carvalho, 864, sala 806','Bela Vista, São Paulo/SP · (11) 94166-3001'],W-M,y+1.5,{align:'right'});
 y+=17;doc.setDrawColor(...AZ);doc.setLineWidth(.8);doc.line(M,y,W-M,y);y+=9;
-doc.setFont('helvetica','bold');doc.setFontSize(15);doc.setTextColor(...NV);doc.text('Ficha cadastral de locação',M,y);
-doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...LB);
-const hoje=new Date();doc.text('Pessoa física · preenchida em '+hoje.toLocaleDateString('pt-BR'),W-M,y,{align:'right'});y+=7;
-const colW=CW/2-3;
+doc.setFont('helvetica','bold');doc.setFontSize(15);doc.setTextColor(...NV);doc.text(T.tit,M,y);
+doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...LB);doc.text(T.eye+' · preenchida em '+new Date().toLocaleDateString('pt-BR'),W-M,y,{align:'right'});y+=7;
+const colW=CW/2-3;const linha=(x1,yy,x2)=>{doc.setDrawColor(221,226,232);doc.setLineWidth(.2);doc.line(x1,yy,x2,yy)};
 for(const s of dados()){
-if(y>262)novaPag();
+if(y>258)novaPag();
 doc.setFillColor(...AZ);doc.rect(M,y,CW,6.5,'F');doc.setFont('helvetica','bold');doc.setFontSize(9.5);doc.setTextColor(255,255,255);doc.text(s.t,M+2.5,y+4.5);y+=10;
 let col=0,hl=0;
-for(const [lab,v,sp] of s.r){
-const wide=sp===2;if(wide&&col===1){col=0;y+=hl}
-const w=wide?CW:colW;const x=M+(col?colW+6:0);
-const linhas=doc.splitTextToSize(v||'',w);const h=5.4+Math.max(1,linhas.length)*4.4;
-if(col===0&&y+h>276){novaPag()}
-doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...LB);doc.text(lab,x,y);
-doc.setFontSize(10);doc.setTextColor(...TX);doc.text(linhas,x,y+4.6);
-if(wide){doc.setDrawColor(221,226,232);doc.setLineWidth(.2);doc.line(x,y+h-3.2,x+w,y+h-3.2);y+=h;col=0}
-else if(col===0){hl=h;col=1;s._x=x}
-else{const H=Math.max(hl,h);doc.setDrawColor(221,226,232);doc.setLineWidth(.2);doc.line(M,y+H-3.2,M+colW,y+H-3.2);doc.line(x,y+H-3.2,x+w,y+H-3.2);y+=H;col=0}
-}
-if(col===1){doc.setDrawColor(221,226,232);doc.setLineWidth(.2);doc.line(M,y+hl-3.2,M+colW,y+hl-3.2);y+=hl}
-y+=3;
-}
-if(y>250)novaPag();
-y+=2;doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...LB);
-doc.text(doc.splitTextToSize('Outros documentos podem ser solicitados para confirmar os dados da ficha ou a renda declarada. A renda dos locatários deve ser igual ou superior a 3 vezes o valor do aluguel.',CW),M,y);
+const fecha=()=>{if(col===1){linha(M,y+hl-3.2,M+colW);y+=hl;col=0}};
+for(const item of s.r){
+if(item.h){fecha();if(y>266)novaPag();doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(...AZ);doc.text(item.h,M,y+1);y+=5.5;continue}
+const [lab,v,sp]=item;const wide=sp===2;if(wide)fecha();
+const w=wide?CW:colW;const x=M+(col?colW+6:0);const ls=doc.splitTextToSize(v||'',w);const h=5.4+Math.max(1,ls.length)*4.4;
+if(col===0&&y+h>276)novaPag();
+doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(...LB);doc.text(lab,x,y);doc.setFontSize(10);doc.setTextColor(...TX);doc.text(ls,x,y+4.6);
+if(wide){linha(x,y+h-3.2,x+w);y+=h}else if(col===0){hl=h;col=1}else{const H=Math.max(hl,h);linha(M,y+H-3.2,M+colW);linha(x,y+H-3.2,x+w);y+=H;col=0}}
+fecha();y+=3}
+if(T.regra){if(y>256)novaPag();y+=2;doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(...LB);doc.text(doc.splitTextToSize(T.regra,CW),M,y)}
 rodape();
-const nome=(val('p1_nome')||'cliente').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w ]/g,'').trim().replace(/\s+/g,'_');
-return {doc,arquivo:`Ficha_Cadastral_LHSP_${nome}.pdf`};
+const nome=(val(T.req[0][0])||'cliente').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w ]/g,'').trim().replace(/\s+/g,'_').slice(0,40);
+const tp=T.curto.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'_');
+return {doc,arquivo:`Ficha_${tp}_LHSP_${nome}.pdf`};
 }
-
-document.getElementById('pdf').addEventListener('click',async()=>{
+async function entregar(compartilhar){
 sync();const f=faltando();
-if(f.length){aviso(faltaTxt(f));f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
+if(f.length){aviso('Para gerar a ficha, preencha os campos marcados em vermelho: '+f.map(x=>x.txt).join(', ')+'.');f[0].el.scrollIntoView({behavior:'smooth',block:'center'});f[0].el.focus({preventScroll:true});return}
 if(!window.jspdf){aviso('O gerador de PDF não carregou. Verifique a internet e recarregue a página.');return}
-try{const {doc,arquivo}=gerarPDF();
-const blob=doc.output('blob');
-if(DL){try{await DL.save({filename:arquivo,data:blob});aviso('PDF salvo: '+arquivo,true)}catch(err){if(err&&err.code!=='declined')aviso('Não foi possível salvar o PDF aqui. Use o botão do WhatsApp.')}return}
-const celular=/Android|iPhone|iPad/i.test(navigator.userAgent);
-const fileObj=new File([blob],arquivo,{type:'application/pdf'});
-if(celular&&navigator.canShare&&navigator.canShare({files:[fileObj]})){
-try{await navigator.share({files:[fileObj],title:'Ficha cadastral LHSP'});aviso('PDF gerado.',true);return}catch(err){if(err.name==='AbortError')return}
-}
-doc.save(arquivo);aviso('PDF salvo: '+arquivo,true);
-}catch(err){aviso('Não foi possível gerar o PDF. Tente novamente.')}
-});
+try{const {doc,arquivo}=gerarPDF();const blob=doc.output('blob');const file=new File([blob],arquivo,{type:'application/pdf'});
+const cel=/Android|iPhone|iPad/i.test(navigator.userAgent);
+if((compartilhar||cel)&&navigator.canShare&&navigator.canShare({files:[file]})){
+try{await navigator.share({files:[file],title:TIPOS[tipo].tit,text:TIPOS[tipo].tit+' - '+(val(TIPOS[tipo].req[0][0])||'')});aviso(compartilhar?'Escolha o WhatsApp e o contato da LHSP para enviar.':'PDF gerado.',true)}
+catch(err){if(err.name!=='AbortError')aviso('Não foi possível abrir o compartilhamento. Use Salvar PDF e envie o arquivo pelo WhatsApp.')}return}
+doc.save(arquivo);aviso('PDF salvo: '+arquivo+(compartilhar?'. Envie o arquivo pelo WhatsApp para a LHSP: '+FONE_LHSP+'.':''),true);
+}catch(err){aviso('Não foi possível gerar o PDF. Tente novamente.')}}
 
-if(!load())addP();
-const API='https://lucanob.app.n8n.cloud/webhook';
-const MAP={end:'im_end',bai:'im_bairro',cid:'im_cidade',fin:'im_fin',ini:'im_inicio',gar:'im_gar'};
-const qs=new URLSearchParams(location.search);let pre=false;
-for(const [k,id] of Object.entries(MAP)){if(qs.has(k)){const el=document.getElementById(id);el.value=qs.get(k);pre=true}}
-const FIN={R:'Residencial',C:'Comercial'},GAR={C:'Caução',F:'Fiador',S:'Seguro fiança',T:'Título de capitalização'};
-if(qs.has('i')){const p=qs.get('i').split('~');const set=(id,v)=>{if(v)document.getElementById(id).value=v};
-set('im_end',p[0]);set('im_bairro',p[1]);set('im_cidade',p[2]||'São Paulo');set('im_fin',FIN[p[3]]||'Residencial');
-if(p[4]&&/^\d{6}$/.test(p[4]))set('im_inicio','20'+p[4].slice(0,2)+'-'+p[4].slice(2,4)+'-'+p[4].slice(4,6));
-set('im_gar',GAR[p[5]]||'');pre=true}
-if(pre){for(const id of Object.values(MAP)){if(id==='im_inicio')continue;const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
-document.querySelector('#sec-imovel .ch p').textContent='Dados do imóvel informados pela LHSP.'}
-if(location.hash==='#gerar'){
-document.body.classList.add('admin');
-const out=document.getElementById('linkOut'),wa=document.getElementById('linkWa'),lm=document.getElementById('linkMsg'),bt=document.getElementById('linkGen'),cp=document.getElementById('linkCopy');
-let atual='';
-const limpa=()=>{atual='';out.value='';wa.classList.add('off');cp.classList.add('off');lm.textContent='Preencha o imóvel e toque em Gerar link.'};
-document.getElementById('sec-imovel').addEventListener('input',limpa);document.getElementById('sec-imovel').addEventListener('change',limpa);limpa();
-bt.addEventListener('click',async()=>{const g=id=>document.getElementById(id).value.trim();
-if(!g('im_end')){lm.textContent='Preencha o endereço do imóvel.';document.getElementById('im_end').focus();return}
+/* ---------- eventos da ficha ---------- */
+form.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.mask)t.value=masks[t.dataset.mask](t.value);t.classList.remove('bad');sync()});
+form.addEventListener('change',sync);
+form.addEventListener('submit',e=>e.preventDefault());
+form.addEventListener('click',e=>{
+const a=e.target.closest('[data-add]');if(a){const v=snapshot();reps[a.dataset.add]++;render();restore(v);aplicaPre();sync();return}
+const r=e.target.closest('[data-rm]');if(r){const id=r.dataset.rm,idx=+r.dataset.i;const s=TIPOS[tipo].secs().find(x=>x.id===id);const p=s.rep.p;const v=snapshot();const nv={};
+for(const [k,x] of Object.entries(v)){const m=k.match(new RegExp('^'+p+'(\\d+)_(.+)$'));if(!m){nv[k]=x;continue}const n=+m[1];if(n===idx)continue;nv[p+(n>idx?n-1:n)+'_'+m[2]]=x}
+reps[id]--;render();restore(nv);aplicaPre();sync()}});
+document.getElementById('send').addEventListener('click',()=>entregar(true));
+document.getElementById('pdf').addEventListener('click',()=>entregar(false));
+function aplicaPre(){for(const [k,v] of Object.entries(pre)){const el=form.elements[k];if(!el)continue;if(el instanceof RadioNodeList){for(const r of el){r.checked=r.value===v}}else el.value=v}}
+function nav(){const links=[...document.querySelectorAll('.nav a')];let k=0;links.forEach((a,i)=>{const s=document.querySelector(a.getAttribute('href'));if(s&&!s.classList.contains('hide')&&s.getBoundingClientRect().top<160)k=i});links.forEach((a,i)=>a.classList.toggle('on',i===k))}
+window.addEventListener('scroll',nav,{passive:true});
+
+function iniciaCliente(){
+let d=null;try{d=JSON.parse(localStorage.getItem(KEY())||'null')}catch(e){}
+if(d&&d.reps)reps=d.reps;
+render();if(d)restore(d.v);aplicaPre();sync();nav();
+}
+
+/* ---------- painel LHSP ---------- */
+function iniciaAdmin(){
+document.body.classList.add('admin');document.getElementById('admin').classList.remove('hide');document.getElementById('cliente').classList.add('hide');
+document.getElementById('hEye').textContent='Uso interno';document.getElementById('hTit').textContent='Fichas LHSP';document.getElementById('hLead').textContent='Escolha o tipo de ficha, preencha o que já sabe e envie o link para o cliente.';
+document.getElementById('hFacts').classList.add('hide');
+const box=document.getElementById('tipos');
+box.innerHTML=ORDEM.map(k=>`<button type="button" class="tipo" data-t="${k}"><b>${esc(TIPOS[k].nome)}</b><span>${esc(TIPOS[k].desc)}</span></button>`).join('');
+const pf=document.getElementById('preForm');const out=document.getElementById('linkOut'),wa=document.getElementById('linkWa'),lm=document.getElementById('linkMsg'),bt=document.getElementById('linkGen'),cp=document.getElementById('linkCopy');
+let atual='',sel=null;
+const limpa=()=>{atual='';out.value='';wa.classList.add('off');cp.classList.add('off');lm.textContent='Preencha o que já sabe e toque em Gerar link.'};
+box.addEventListener('click',e=>{const b=e.target.closest('.tipo');if(!b)return;sel=b.dataset.t;box.querySelectorAll('.tipo').forEach(x=>x.classList.toggle('on',x===b));
+const T=TIPOS[sel];const all=T.secs().flatMap(s=>s.rep?[]:s.fields);const fs=T.pre.map(k=>all.find(f=>f.k===k)).filter(Boolean);
+pf.innerHTML=groupHTML(fs.map(f=>({...f,req:false})),'');for(const f of fs)if(f.v&&pf.elements[f.k])pf.elements[f.k].value=f.v;
+document.getElementById('admPreTit').textContent='Dados que a LHSP já preenche: '+T.curto;
+document.getElementById('admPre').classList.remove('hide');document.getElementById('admLink').classList.remove('hide');limpa();
+document.getElementById('admPre').scrollIntoView({behavior:'smooth',block:'start'})});
+pf.addEventListener('input',e=>{const t=e.target;if(t.dataset&&t.dataset.mask)t.value=masks[t.dataset.mask](t.value);limpa()});pf.addEventListener('change',limpa);
+bt.addEventListener('click',async()=>{if(!sel)return;const d={};for(const el of pf.elements){if(!el.name)continue;if(el.type==='radio'){if(el.checked)d[el.name]=el.value}else if(el.value.trim())d[el.name]=el.value.trim()}
 bt.disabled=true;lm.textContent='Gerando link...';
-try{const r=await fetch(API+'/ficha-lhsp-salvar?'+new URLSearchParams({end:g('im_end'),bai:g('im_bairro'),cid:g('im_cidade'),fin:g('im_fin'),ini:g('im_inicio'),gar:g('im_gar')}));const j=await r.json();if(!j.codigo)throw 0;
+try{const r=await fetch(API+'/ficha-lhsp-salvar?'+new URLSearchParams({t:sel,d:JSON.stringify(d)}));const j=await r.json();if(!j.codigo)throw 0;
 atual=location.origin+location.pathname+'?c='+j.codigo;out.value=atual;
-wa.href='https://wa.me/?text='+encodeURIComponent('Segue a ficha cadastral de locação da LHSP. Preencha e envie o PDF por aqui: '+atual);
+wa.href='https://wa.me/?text='+encodeURIComponent('Segue a '+TIPOS[sel].tit.toLowerCase()+' da LHSP. Preencha e envie o PDF por aqui: '+atual);
 wa.classList.remove('off');cp.classList.remove('off');lm.textContent='Link pronto. Envie pelo WhatsApp ou copie.'}
-catch(e){lm.textContent='Não foi possível gerar o link agora. Tente de novo em instantes.'}
-bt.disabled=false});
+catch(e){lm.textContent='Não foi possível gerar o link agora. Tente de novo em instantes.'}bt.disabled=false});
 cp.addEventListener('click',async()=>{if(!atual)return;try{await navigator.clipboard.writeText(atual);lm.textContent='Link copiado.'}catch(e){out.select();lm.textContent='Selecione e copie o link acima.'}});
 }
-if(qs.has('c')&&location.hash!=='#gerar'){
-const st=document.querySelector('#sec-imovel .ch p');st.textContent='Carregando os dados do imóvel...';
-fetch(API+'/ficha-lhsp-ler?c='+encodeURIComponent(qs.get('c'))).then(r=>r.json()).then(j=>{
-if(!j.ok){st.textContent='Dados do imóvel que você quer alugar.';return}
-const set=(id,v)=>{if(v)document.getElementById(id).value=v};
-set('im_end',j.end);set('im_bairro',j.bai);set('im_cidade',j.cid);set('im_fin',j.fin);set('im_inicio',j.ini);set('im_gar',j.gar);
-for(const id of Object.values(MAP)){if(id==='im_inicio')continue;const el=document.getElementById(id);if(el.tagName==='SELECT'){el.disabled=true}else{el.readOnly=true}el.classList.add('fix')}
-st.textContent='Dados do imóvel informados pela LHSP.';sync()}).catch(()=>{st.textContent='Dados do imóvel que você quer alugar.'});
-}
 
-sync();
+/* ---------- início ---------- */
+if(admin){iniciaAdmin()}
+else if(qs.has('c')){
+form.innerHTML='<section class="card"><div class="cb"><p class="note">Carregando a ficha...</p></div></section>';
+fetch(API+'/ficha-lhsp-ler?c='+encodeURIComponent(qs.get('c'))).then(r=>r.json()).then(j=>{
+if(j.ok){if(TIPOS[j.tipo])tipo=j.tipo;
+let d={};try{d=j.dados?JSON.parse(j.dados):{}}catch(e){}
+if(!j.tipo){d={im_end:j.end,im_bairro:j.bai,im_cidade:j.cid,im_fin:j.fin,im_inicio:j.ini,im_gar:j.gar}}
+for(const [k,v] of Object.entries(d))if(v)pre[k]=v;
+const all=TIPOS[tipo].secs().flatMap(s=>s.rep?[]:s.fields);
+for(const k of Object.keys(pre)){const f=all.find(x=>x.k===k);if(f&&!f.free)locked[k]=true}}
+iniciaCliente()}).catch(()=>iniciaCliente());
 }
-</script>
-<script>
-{
-const links=[...document.querySelectorAll('.nav a')];const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
-const marca=()=>{let k=0;secs.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<160)k=i});links.forEach((a,i)=>a.classList.toggle('on',i===k))};
-window.addEventListener('scroll',marca,{passive:true});marca();
+else{
+const MAP={end:'im_end',bai:'im_bairro',cid:'im_cidade',fin:'im_fin',ini:'im_inicio',gar:'im_gar'};
+for(const [k,id] of Object.entries(MAP))if(qs.get(k)){pre[id]=qs.get(k);if(id!=='im_inicio')locked[id]=true}
+iniciaCliente();
+}
 }
 </script>
 </body>
